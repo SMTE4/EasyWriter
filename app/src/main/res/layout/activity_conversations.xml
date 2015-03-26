@@ -5,7 +5,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Conversations">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView android:text="@string/conversations" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:textSize="20sp"
+        android:id="@+id/stat_tvConversations" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/lvConversationDisplay"
+        android:layout_below="@+id/stat_tvConversations"
+        android:layout_above="@+id/btnNewConversation" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/newConversation"
+        android:id="@+id/btnNewConversation"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
