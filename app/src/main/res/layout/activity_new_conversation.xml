@@ -12,26 +12,16 @@
         android:textSize="30sp"
         android:id="@+id/stat_tvNewConversation" />
 
-    <TextView
+    <SearchView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/selectContact"
-        android:id="@+id/stat_tvSelectContact"
-        android:layout_below="@+id/stat_tvNewConversation"
-        android:layout_marginTop="5dp" />
+        android:id="@+id/svSearchContact"
+        android:layout_below="@+id/stat_tvNewConversation" />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lvContacts"
-        android:layout_below="@+id/stat_tvSelectContact"
-        android:layout_above="@+id/btnBack" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/back"
-        android:id="@+id/btnBack"
-        android:layout_alignParentBottom="true" />
+        android:layout_below="@+id/svSearchContact" />
 
 </RelativeLayout>

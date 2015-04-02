@@ -11,8 +11,12 @@
     <string name="back">Back</string>
     <string name="newmessage">New Message</string>
     <string name="title_activity_new_message">New Message</string>
-    <string name="drawprompt">Draw a letter</string>
+    <string name="drawprompt">Write here =)</string>
     <string name="sendmessage">Send</string>
     <string name="clear">Clear</string>
     <string name="backspace">Backspace</string>
+    <string name="swipeLeftPrompt">[[[[Clear[[[[</string>
+    <string name="swipeRightPrompt">]]]]Accept]]]]</string>
+    <string name="title_activity_conversation_display">ConversationDisplay</string>
+    <string name="title_activity_new_conversation">New Conversation</string>
 </resources>

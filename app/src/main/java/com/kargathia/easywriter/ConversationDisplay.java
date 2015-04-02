@@ -7,19 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class NewConversation extends Activity {
+public class ConversationDisplay extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_conversation);
+        setContentView(R.layout.activity_conversation_display);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_conversation, menu);
+        getMenuInflater().inflate(R.menu.menu_conversation_display, menu);
         return true;
     }
 
@@ -38,11 +38,19 @@ public class NewConversation extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void searchContact(){
+    public void startWriting(){
 
     }
 
-    public void startConversation(){
+    public void letterOK(){
+
+    }
+
+    public void backGesture(){
+
+    }
+
+    public void acceptGesture(){
 
     }
 }

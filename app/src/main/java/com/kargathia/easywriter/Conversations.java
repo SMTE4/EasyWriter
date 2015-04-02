@@ -37,4 +37,12 @@ public class Conversations extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void openConvHistory(){
+
+    }
+
+    public void newConv(){
+
+    }
 }
