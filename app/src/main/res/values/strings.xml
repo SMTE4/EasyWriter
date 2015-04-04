@@ -15,8 +15,8 @@
     <string name="sendmessage">Send</string>
     <string name="clear">Clear</string>
     <string name="backspace">Backspace</string>
-    <string name="swipeLeftPrompt">[[[[Clear[[[[</string>
-    <string name="swipeRightPrompt">]]]]Accept]]]]</string>
+    <string name="swipeLeftPrompt">&lt; x</string>
+    <string name="swipeRightPrompt">\u2713 &gt;</string>
     <string name="title_activity_conversation_display">ConversationDisplay</string>
     <string name="title_activity_new_conversation">New Conversation</string>
 </resources>
