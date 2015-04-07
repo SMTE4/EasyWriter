@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import net.sourceforge.tess4j.TessAPI.*;
 
 
 public class ConversationDisplay extends Activity {
