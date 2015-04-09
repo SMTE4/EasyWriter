@@ -25,7 +25,8 @@
     <RelativeLayout
         android:id="@+id/layoutNewMessage"
         style="@style/RV.conversation2"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:background="@drawable/white_box">
 
         <TextView
             android:id="@+id/stat_tvLeftSwipePrompt"
@@ -65,7 +66,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btnAcceptLetter"
-            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt" />
+            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt"/>
 
         <Button
             android:id="@+id/btnAcceptLetter"
