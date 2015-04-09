@@ -1,18 +1,87 @@
 package com.kargathia.easywriter;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
 
 public class Conversations extends Activity {
 
+    ContactProvider provider = ContactProvider.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
+
+        provider.contacten = getContacts();
+
+//Get a reference to the listview
+        ListView listview = (ListView) findViewById(R.id.lvConversationDisplay);
+        //Get a reference to the list with names
+
+        //Create an adapter that feeds the data to the listview
+        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.contacten);
+        listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+//Get the name from the array that is in the same position as the chosen listitem.
+                //Todo start intent and pass name using putExtra
+                Intent intent = new Intent(Conversations.this,ConversationDisplay.class);
+                //doorsturen contactpersoon
+                intent.putExtra("ContactPosition",position);
+                startActivity(intent);
+            }
+        });
+    }
+    public List<Contact> getContacts(){
+        List<Contact> contact = new ArrayList();
+        //ophalen contacten
+        Uri contant_uri = ContactsContract.Contacts.CONTENT_URI;
+        ContentResolver contantResolver = getContentResolver();
+        Cursor cursor = contantResolver.query(contant_uri, null, null, null, null);
+
+        Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+        //voor elke contact met telefoonnummer in de telefoon
+        if(cursor.getCount()>0)
+        {
+            while(cursor.moveToNext())
+            {
+                String phone_number = "No number";
+                String naam = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                int number = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String phone_id =ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+                System.out.println(naam);
+                if(number>0) {
+                    Cursor phone_cursor = contantResolver.query(phone_uri, null, phone_id + " = ?", new String[]{contact_id}, null);
+                    while (phone_cursor.moveToNext()) {
+                        phone_number = phone_cursor.getString(phone_cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+                    phone_cursor.close();
+                }
+                contact.add(new Contact(naam, phone_number, null));
+            }
+        }
+        cursor.close();
+
+        //ophalen berichten
+        
+        return contact;
     }
 
 

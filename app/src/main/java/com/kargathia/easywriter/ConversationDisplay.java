@@ -2,6 +2,7 @@ package com.kargathia.easywriter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,9 @@ public class ConversationDisplay extends Activity {
     private RelativeLayout layoutHistory;
     private TextView tvDrawPrompt;
     private DrawingView dvDrawDisplay;
+    private int number = 0;
+    private Contact contact = null;
+    private ContactProvider provider = ContactProvider.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,14 @@ public class ConversationDisplay extends Activity {
         ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
         layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
         layoutHistory.setOnTouchListener(activitySwipeDetector);
+
+        Intent intent = getIntent();
+        number = intent.getIntExtra("ContactPosition", 0);
+        System.out.println(number);
+        contact = provider.contacten.get(number);
+
+        TextView tv = (TextView)this.findViewById(R.id.tvContactName);
+        tv.setText(contact.name);
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
