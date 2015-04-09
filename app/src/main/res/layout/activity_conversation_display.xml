@@ -13,10 +13,11 @@
             style="@style/tv.Large"
             android:text="Contact Name" />
 
-        <ListView
-            android:id="@+id/lvHistory"
-            style="@style/ListView"
-            android:layout_below="@+id/tvContactName" />
+            <ListView
+                android:id="@+id/lvHistory"
+                style="@style/ListView"
+                android:layout_below="@+id/tvContactName" />
+
     </RelativeLayout>
 
     <RelativeLayout
