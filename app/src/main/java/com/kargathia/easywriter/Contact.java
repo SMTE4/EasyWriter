@@ -1,6 +1,7 @@
 package com.kargathia.easywriter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +26,10 @@ public class Contact {
         }
 
             this.nummer = nummer;
+    }
+    public void addMessage(String message, Date datum)
+    {
+        messages.add(new Message(message, datum));
     }
 
 }
