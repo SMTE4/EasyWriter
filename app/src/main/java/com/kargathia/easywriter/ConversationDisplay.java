@@ -2,26 +2,19 @@ package com.kargathia.easywriter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import net.sourceforge.tess4j.TessAPI.*;
 
 
 public class ConversationDisplay extends Activity {
 
     private RelativeLayout layoutHistory;
-    private EditText tfTest;
-    private TextView dvDrawPrompt;
+    private TextView tvDrawPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +26,7 @@ public class ConversationDisplay extends Activity {
         layoutHistory.setOnTouchListener(activitySwipeDetector);
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
-        this.dvDrawPrompt = (TextView) this.findViewById(R.id.dvDrawDisplay);
+        this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
     }
 
 
@@ -72,11 +65,11 @@ public class ConversationDisplay extends Activity {
     }
 
     public void backGesture() {
-        String text = dvDrawPrompt.getText().toString();
+        String text = tvDrawPrompt.getText().toString();
         int length = text.length();
         if (length > 0) {
             text = text.substring(0, length - 1);
-            dvDrawPrompt.setText(text);
+            tvDrawPrompt.setText(text);
 //            dvDrawPrompt.getText().delete(length - 1, length);
 //            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
 //            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
@@ -86,7 +79,7 @@ public class ConversationDisplay extends Activity {
     }
 
     public void acceptGesture() {
-        displayToast("sending message: " + tfTest.getText().toString());
+        displayToast("sending message: " + tvDrawPrompt.getText());
     }
 
     private void displayToast(String text) {

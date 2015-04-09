@@ -58,7 +58,7 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
-        display.setText(this.detectText(canvasBitmap));
+//        display.setText(this.detectText(canvasBitmap));
     }
 
     @Override
