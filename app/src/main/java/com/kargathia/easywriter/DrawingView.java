@@ -6,14 +6,19 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+
+import com.googlecode.tesseract.android.TessBaseAPI;
 
 /**
  * Created by Kargathia on 04/04/2015.
  */
 public class DrawingView extends View {
+    private static final Object READING_LOCK = "";
+
     //drawing path
     private Path drawPath;
     //drawing and canvas paint
@@ -24,7 +29,9 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap = null;
-    private TextView display;
+    private TextView display = null;
+    private String recognisedText = "";
+    private boolean isReading = false;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,7 +65,13 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
-//        display.setText(this.detectText(canvasBitmap));
+        synchronized(READING_LOCK){
+            if(isReading){
+                recognisedText = detectText(canvasBitmap);
+                display.setText(recognisedText);
+                isReading = false;
+            }
+        }
     }
 
     @Override
@@ -75,6 +88,7 @@ public class DrawingView extends View {
             case MotionEvent.ACTION_UP:
                 drawCanvas.drawPath(drawPath, drawPaint);
                 drawPath.reset();
+                isReading = true;
                 break;
             default:
                 return false;
@@ -85,6 +99,6 @@ public class DrawingView extends View {
 
 
     private String detectText(Bitmap bitmap) {
-        return null;
+        return "text";
     }
 }

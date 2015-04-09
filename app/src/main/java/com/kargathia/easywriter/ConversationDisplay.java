@@ -15,6 +15,7 @@ public class ConversationDisplay extends Activity {
 
     private RelativeLayout layoutHistory;
     private TextView tvDrawPrompt;
+    private DrawingView dvDrawDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,8 @@ public class ConversationDisplay extends Activity {
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
+        this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
+        this.dvDrawDisplay.setOutput(tvDrawPrompt);
     }
 
 
