@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import net.sourceforge.tess4j.TessAPI.*;
 
@@ -20,6 +21,7 @@ public class ConversationDisplay extends Activity {
 
     private RelativeLayout layoutHistory;
     private EditText tfTest;
+    private TextView dvDrawPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,8 @@ public class ConversationDisplay extends Activity {
         layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
         layoutHistory.setOnTouchListener(activitySwipeDetector);
 
-        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
+//        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
+        this.dvDrawPrompt = (TextView) this.findViewById(R.id.dvDrawDisplay);
     }
 
 
@@ -69,11 +72,14 @@ public class ConversationDisplay extends Activity {
     }
 
     public void backGesture() {
-        int length = tfTest.getText().length();
+        String text = dvDrawPrompt.getText().toString();
+        int length = text.length();
         if (length > 0) {
-//            tfTest.getText().delete(length - 1, length);
-            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+            text = text.substring(0, length - 1);
+            dvDrawPrompt.setText(text);
+//            dvDrawPrompt.getText().delete(length - 1, length);
+//            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+//            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
         } else {
             displayToast("going back now");
         }

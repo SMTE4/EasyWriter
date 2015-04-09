@@ -1,105 +1,87 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.kargathia.easywriter.ConversationDisplay"
-    android:orientation="vertical">
+    tools:context="com.kargathia.easywriter.ConversationDisplay">
 
     <RelativeLayout
+        android:id="@+id/layoutHistory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/layoutHistory"
-        android:layout_alignParentTop="true"
-        android:layout_below="@+id/layoutNewMessage"
-        android:layout_alignParentStart="true"
         android:layout_weight="5"
         android:paddingBottom="20dp">
 
         <TextView
+            android:id="@+id/tvContactName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Contact Name"
-            android:id="@+id/tvContactName" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ListView
+            android:id="@+id/lvHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lvHistory"
             android:layout_below="@+id/tvContactName" />
-
     </RelativeLayout>
 
-    <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <RelativeLayout
         android:id="@+id/layoutNewMessage"
-        android:layout_alignParentBottom="false"
-        android:layout_alignWithParentIfMissing="false"
-        android:visibility="visible"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="5">
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tfTestField"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:editable="true" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:visibility="visible">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/swipeLeftPrompt"
             android:id="@+id/stat_tvLeftSwipePrompt"
-            android:layout_alignParentLeft="true"
-            android:textSize="40dp"
-            android:layout_alignParentTop="false"
-            android:layout_below="@+id/tfTestField"
-            android:textColor="#ffae0e08" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/swipeRightPrompt"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/swipeLeftPrompt"
+            android:textColor="#ffae0e08"
+            android:textSize="40sp" />
+
+        <TextView
             android:id="@+id/stat_tvRightSwipePrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/stat_tvLeftSwipePrompt"
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
-            android:phoneNumber="false"
-            android:textSize="40dp"
-            android:layout_alignBottom="@+id/stat_tvLeftSwipePrompt"
-            android:textColor="#ff3eae0e" />
+            android:text="@string/swipeRightPrompt"
+            android:textColor="#ff3eae0e"
+            android:textSize="40sp" />
 
         <TextView
+            android:id="@+id/stat_tvDrawPrompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/drawprompt"
-            android:id="@+id/stat_tvDrawPrompt"
+            android:layout_alignBottom="@+id/dvDrawDisplay"
+            android:layout_alignTop="@+id/dvDrawDisplay"
             android:layout_centerHorizontal="true"
-            android:layout_alignTop="@+id/ivDrawDisplay"
-            android:textSize="50dp"
+            android:alpha="0.5"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_alignBottom="@+id/ivDrawDisplay" />
+            android:text="@string/drawprompt"
+            android:textSize="50sp" />
 
-        <ImageView
+        <com.kargathia.easywriter.DrawingView
+            android:id="@+id/dvDrawDisplay"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ivDrawDisplay"
-            android:layout_below="@+id/stat_tvLeftSwipePrompt"
-            android:layout_above="@+id/btnAcceptLetter" />
+            android:layout_above="@+id/btnAcceptLetter"
+            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt" />
 
         <Button
+            android:id="@+id/btnAcceptLetter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="accept letter"
-            android:id="@+id/btnAcceptLetter"
-            android:layout_alignParentBottom="true" />
-
+            android:layout_alignParentBottom="true"
+            android:text="accept letter" />
     </RelativeLayout>
-
 </LinearLayout>
