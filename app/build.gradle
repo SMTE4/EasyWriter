@@ -1,14 +1,5 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    mavenCentral()
-    maven {
-        url "http://www.mygrid.org.uk/maven/repository"
-    }
-    maven {
-        url  "http://repo.ghost4j.org/maven2/releases"
-    }
-}
 
 android {
     compileSdkVersion 21
@@ -32,5 +23,4 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'net.sourceforge.tess4j:tess4j:1.5.0'
 }
