@@ -37,5 +37,62 @@
         <item name="android:layout_weight">5</item>
     </style>
 
+    <style name="TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="tv.Large" parent="TextView">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+    <style name="tv.New" parent="TextView">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="tv.swipeLeft" parent="TextView">
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:textColor">#ffae0e08</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+    <style name="tv.swipeRight" parent="TextView">
+        <item name="android:layout_alignParentLeft">false</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:textColor">#ff3eae0e</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+    <style name="tv.drawHere" parent="TextView">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textSize">50sp</item>
+    </style>
+    <style name="tv.conversations" parent="TextView">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentTop">false</item>
+        <item name="android:layout_alignParentEnd">false</item>
+        <item name="android:layout_alignParentStart">false</item>
+        <item name="android:layout_alignParentLeft">false</item>
+        <item name="android:layout_alignParentRight">false</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 
+    <style name="Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+    <style name="btn.New" parent="Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="ListView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="SearchView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

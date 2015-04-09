@@ -3,14 +3,12 @@
     style="@style/LineairView">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView"
         android:text="Date"
         android:id="@+id/tvDateTimeSent" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView"
         android:text="Text"
         android:id="@+id/tvMessageText" />
 </LinearLayout>

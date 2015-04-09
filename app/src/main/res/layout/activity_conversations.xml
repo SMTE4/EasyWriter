@@ -4,15 +4,7 @@
     tools:context=".Conversations">
 
     <TextView android:text="@string/conversations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="false"
-        android:textSize="20sp"
+        style="@style/tv.conversations"
         android:id="@+id/stat_tvConversations" />
 
     <ListView
@@ -23,11 +15,8 @@
         android:layout_above="@+id/btnNewConversation" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/btn.New"
         android:text="@string/newConversation"
-        android:id="@+id/btnNewConversation"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/btnNewConversation" />
 
 </RelativeLayout>

@@ -3,21 +3,17 @@
     style="@style/RV.conversation1"
     tools:context="com.kargathia.easywriter.NewConversation">
 
-    <TextView android:text="@string/newConversation" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="30sp"
+    <TextView android:text="@string/newConversation"
+        style="@style/tv.New"
         android:id="@+id/stat_tvNewConversation" />
 
     <SearchView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/SearchView"
         android:id="@+id/svSearchContact"
         android:layout_below="@+id/stat_tvNewConversation" />
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ListView"
         android:id="@+id/lvContacts"
         android:layout_below="@+id/svSearchContact" />
 
