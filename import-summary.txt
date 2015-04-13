@@ -7,24 +7,22 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
-* COPYING
-* README
-* build.xml
+* .externalToolBuilders\
+* .externalToolBuilders\New_Builder (2).launch
+* default.properties
+* proguard.cfg
 
 Moved Files:
 ------------
 Android Gradle projects use a different directory structure than ADT
 Eclipse projects. Here's how the projects were restructured:
 
-* AndroidManifest.xml => eyestwo\src\main\AndroidManifest.xml
-* jni\ => eyestwo\src\main\jni\
-* res\ => eyestwo\src\main\res\
-* src\ => eyestwo\src\main\java\
-* src\com\googlecode\eyesfree\ocr\client\IOcr.aidl => eyestwo\src\main\aidl\com\googlecode\eyesfree\ocr\client\IOcr.aidl
-* src\com\googlecode\eyesfree\ocr\client\IOcrCallback.aidl => eyestwo\src\main\aidl\com\googlecode\eyesfree\ocr\client\IOcrCallback.aidl
-* src\com\googlecode\eyesfree\ocr\client\Language.aidl => eyestwo\src\main\aidl\com\googlecode\eyesfree\ocr\client\Language.aidl
-* src\com\googlecode\eyesfree\ocr\client\Ocr.aidl => eyestwo\src\main\aidl\com\googlecode\eyesfree\ocr\client\Ocr.aidl
-* src\com\googlecode\eyesfree\ocr\client\OcrResult.aidl => eyestwo\src\main\aidl\com\googlecode\eyesfree\ocr\client\OcrResult.aidl
+* AndroidManifest.xml => lipiTk\src\main\AndroidManifest.xml
+* assets\ => lipiTk\src\main\assets\
+* jni\ => lipiTk\src\main\jni\
+* libs\TTS_library_stub.jar => lipiTk\libs\TTS_library_stub.jar
+* res\ => lipiTk\src\main\res\
+* src\ => lipiTk\src\main\java\
 
 Next Steps:
 -----------

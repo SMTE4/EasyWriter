@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public class ConversationDisplay extends Activity {
     private RelativeLayout layoutHistory;
     private TextView tvDrawPrompt;
     private DrawingView dvDrawDisplay;
+    private Button btnLetterOk;
     private int number = 0;
     private Contact contact = null;
     private ContactProvider provider = ContactProvider.getInstance();
@@ -30,18 +32,21 @@ public class ConversationDisplay extends Activity {
         layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
         layoutHistory.setOnTouchListener(activitySwipeDetector);
 
+        TextView tv = (TextView)this.findViewById(R.id.tvContactName);
+
         Intent intent = getIntent();
         number = intent.getIntExtra("ContactPosition", 0);
-        System.out.println(number);
-        contact = provider.contacten.get(number);
-
-        TextView tv = (TextView)this.findViewById(R.id.tvContactName);
-        tv.setText(contact.name);
+        if(number != 0){
+            System.out.println(number);
+            contact = provider.contacten.get(number);
+            tv.setText(contact.name);
+        }
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
         this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
-        this.dvDrawDisplay.setOutput(tvDrawPrompt);
+        this.btnLetterOk = (Button) this.findViewById(R.id.btnAcceptLetter);
+        dvDrawDisplay.setOutput(btnLetterOk);
     }
 
 
@@ -82,12 +87,12 @@ public class ConversationDisplay extends Activity {
     public void backGesture() {
         String text = tvDrawPrompt.getText().toString();
         int length = text.length();
-        if (length > 0) {
+        if(dvDrawDisplay.resetCanvas()){
+            displayToast("wiped");
+            return;
+        } else if (length > 0) {
             text = text.substring(0, length - 1);
             tvDrawPrompt.setText(text);
-//            dvDrawPrompt.getText().delete(length - 1, length);
-//            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-//            tfTest.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
         } else {
             displayToast("going back now");
         }

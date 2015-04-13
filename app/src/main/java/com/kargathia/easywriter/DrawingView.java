@@ -1,17 +1,26 @@
 package com.kargathia.easywriter;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by Kargathia on 04/04/2015.
@@ -29,17 +38,28 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap = null;
-    private TextView display = null;
-    private String recognisedText = "";
-    private boolean isReading = false;
+    private Button display = null;
+    private String recognisedText = "unchanged";
+    private boolean
+            isReading = false,
+            isDrawing = false;
+    private String dataPath;
+    private TessBaseAPI baseApi;
+
+    private Context context;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setupDrawing();
+        this.context = context;
     }
 
-    public void setOutput(TextView display) {
-        this.display = display;
+    public void setOutput(Button buttonOk) {
+        this.copyAssets();
+        this.display = buttonOk;
+
+        this.baseApi = new TessBaseAPI();
+        baseApi.init(dataPath, "eng");
     }
 
     private void setupDrawing() {
@@ -52,6 +72,19 @@ public class DrawingView extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
+    }
+
+    public boolean resetCanvas(){
+        if(isDrawing){
+            canvasBitmap.eraseColor(Color.WHITE);
+            recognisedText = "";
+            setOutputText();
+            isDrawing = false;
+            invalidate();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -68,7 +101,8 @@ public class DrawingView extends View {
         synchronized(READING_LOCK){
             if(isReading){
                 recognisedText = detectText(canvasBitmap);
-                display.setText(recognisedText);
+//                display.setText(recognisedText);
+                setOutputText();
                 isReading = false;
             }
         }
@@ -89,6 +123,7 @@ public class DrawingView extends View {
                 drawCanvas.drawPath(drawPath, drawPaint);
                 drawPath.reset();
                 isReading = true;
+                isDrawing = true;
                 break;
             default:
                 return false;
@@ -99,6 +134,75 @@ public class DrawingView extends View {
 
 
     private String detectText(Bitmap bitmap) {
-        return "text";
+//        baseApi.init(dataPath, "eng");
+// Eg. baseApi.init("/mnt/sdcard/tesseract/tessdata/eng.traineddata", "eng");
+        baseApi.setImage(bitmap);
+        String output = baseApi.getUTF8Text();
+        Log.i("recognizedText", output);
+//        baseApi.end();
+        return output;
     }
+
+    private void setOutputText(){
+        if(recognisedText.isEmpty()){
+            display.setText("[SPACE]");
+        } else {
+            display.setText(recognisedText);
+        }
+    }
+
+    private void copyAssets() {
+        context = getContext();
+
+        AssetManager assetManager = context.getAssets();
+        String[] files = null;
+        File dir = null;
+        try {
+            files = assetManager.list("tessdata");
+            dir = new File(context.getFilesDir(), "tessdata");
+            dir.mkdir();
+            dataPath = context.getFilesDir().getPath();
+            Log.i("datapath", dataPath);
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        for(String filename : files) {
+            Log.i("filename", filename);
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open("tessdata/" + filename);
+                File outFile = new File(dir, filename);
+                out = new FileOutputStream(outFile);
+                copyFile(in, out);
+            } catch(IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+            }
+        }
+    }
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+    }
+
+
 }
