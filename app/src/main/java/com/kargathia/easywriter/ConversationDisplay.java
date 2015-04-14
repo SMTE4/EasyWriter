@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,9 +16,11 @@ import android.widget.Toast;
 public class ConversationDisplay extends Activity {
 
     private RelativeLayout layoutHistory;
-    private TextView tvDrawPrompt;
+    private TextView
+            tvDrawPrompt,
+            tvSwipeRightPrompt;
     private DrawingView dvDrawDisplay;
-    private Button btnLetterOk;
+    private Button btnSendMessage;
     private int number = 0;
     private Contact contact = null;
     private ContactProvider provider = ContactProvider.getInstance();
@@ -35,8 +37,8 @@ public class ConversationDisplay extends Activity {
         TextView tv = (TextView)this.findViewById(R.id.tvContactName);
 
         Intent intent = getIntent();
-        number = intent.getIntExtra("ContactPosition", 0);
-        if(number != 0){
+        number = intent.getIntExtra("ContactPosition", -1);
+        if(number != -1){
             System.out.println(number);
             contact = provider.contacten.get(number);
             tv.setText(contact.name);
@@ -45,8 +47,12 @@ public class ConversationDisplay extends Activity {
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
         this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
-        this.btnLetterOk = (Button) this.findViewById(R.id.btnAcceptLetter);
-        dvDrawDisplay.setOutput(btnLetterOk);
+        this.btnSendMessage = (Button) this.findViewById(R.id.btnSendMessage);
+        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
+
+        dvDrawDisplay.setOutput(tvSwipeRightPrompt);
+
+        this.setOnClicks();
     }
 
 
@@ -73,15 +79,13 @@ public class ConversationDisplay extends Activity {
     }
 
     private void setOnClicks() {
-
-    }
-
-    public void startWriting() {
-
-    }
-
-    public void letterOK() {
-
+        // send message
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayToast("sending message: " + tvDrawPrompt.getText());
+            }
+        });
     }
 
     public void backGesture() {
@@ -99,7 +103,8 @@ public class ConversationDisplay extends Activity {
     }
 
     public void acceptGesture() {
-        displayToast("sending message: " + tvDrawPrompt.getText());
+        displayToast("adding letter: " + dvDrawDisplay.getRecognisedText());
+        dvDrawDisplay.resetCanvas();
     }
 
     private void displayToast(String text) {

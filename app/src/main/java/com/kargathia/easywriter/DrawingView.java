@@ -38,7 +38,7 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap = null;
-    private Button display = null;
+    private TextView display = null;
     private String recognisedText = "unchanged";
     private boolean
             isReading = false,
@@ -48,16 +48,16 @@ public class DrawingView extends View {
 
     private Context context;
 
+    public String getRecognisedText(){
+        return this.recognisedText;
+    }
+
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setupDrawing();
         this.context = context;
-    }
 
-    public void setOutput(Button buttonOk) {
         this.copyAssets();
-        this.display = buttonOk;
-
         this.baseApi = new TessBaseAPI();
         baseApi.init(dataPath, "eng");
     }
@@ -74,11 +74,15 @@ public class DrawingView extends View {
         canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
+    public void setOutput(TextView display) {
+        this.display = display;
+        this.setOutputText(" ");
+    }
+
     public boolean resetCanvas(){
         if(isDrawing){
             canvasBitmap.eraseColor(Color.WHITE);
-            recognisedText = "";
-            setOutputText();
+            setOutputText(" ");
             isDrawing = false;
             invalidate();
             return true;
@@ -100,9 +104,7 @@ public class DrawingView extends View {
         canvas.drawPath(drawPath, drawPaint);
         synchronized(READING_LOCK){
             if(isReading){
-                recognisedText = detectText(canvasBitmap);
-//                display.setText(recognisedText);
-                setOutputText();
+                setOutputText(detectText(canvasBitmap));
                 isReading = false;
             }
         }
@@ -134,23 +136,25 @@ public class DrawingView extends View {
 
 
     private String detectText(Bitmap bitmap) {
-//        baseApi.init(dataPath, "eng");
-// Eg. baseApi.init("/mnt/sdcard/tesseract/tessdata/eng.traineddata", "eng");
         baseApi.setImage(bitmap);
         String output = baseApi.getUTF8Text();
-        Log.i("recognizedText", output);
-//        baseApi.end();
+        Log.i("recognisedText", output);
         return output;
     }
 
-    private void setOutputText(){
-        if(recognisedText.isEmpty()){
+    private void setOutputText(String input){
+        this.recognisedText = input;
+        if(recognisedText.trim().isEmpty()){
             display.setText("[SPACE]");
         } else {
             display.setText(recognisedText);
         }
+        display.append(" >");
     }
 
+    /**
+     * Copies tessdata assets to internal phone memory, as accessing is done by path.
+     */
     private void copyAssets() {
         context = getContext();
 

@@ -26,6 +26,13 @@
         android:visibility="visible"
         android:background="@drawable/white_box">
 
+        <com.kargathia.easywriter.DrawingView
+            android:id="@+id/dvDrawDisplay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnSendMessage"
+            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt"/>
+
         <TextView
             android:id="@+id/stat_tvLeftSwipePrompt"
             style="@style/tv.swipeLeft"
@@ -44,15 +51,8 @@
             android:layout_alignTop="@+id/dvDrawDisplay"
             android:text="@string/drawprompt" />
 
-        <com.kargathia.easywriter.DrawingView
-            android:id="@+id/dvDrawDisplay"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btnAcceptLetter"
-            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt"/>
-
         <Button
-            android:id="@+id/btnAcceptLetter"
+            android:id="@+id/btnSendMessage"
             style="@style/Button"
             android:text="accept letter" />
     </RelativeLayout>
