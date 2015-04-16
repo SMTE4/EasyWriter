@@ -1,10 +1,12 @@
 package com.kargathia.easywriter;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -41,6 +43,8 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view  = inflater.inflate(R.layout.contacts_item, null);
         }
+        ImageView iv1 = (ImageView) view.findViewById(R.id.ivContact);
+        iv1.setImageDrawable(contact.image);
         TextView tv1 = (TextView) view.findViewById(R.id.tvContact);
         tv1.setText(contact.name);
         TextView tv2 = (TextView) view.findViewById(R.id.tvLastMessage);

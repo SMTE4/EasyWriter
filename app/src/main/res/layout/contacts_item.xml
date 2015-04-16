@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/LineairView"
     android:layout_height="wrap_content"
-    android:padding="15dp">
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/ivContact"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_margin="30px"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/LineairView"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
 
 
-    <TextView
-        style="@style/tv.Large"
-        android:text="Large Text"
-        android:id="@+id/tvContact" />
+        <TextView
+            style="@style/tv.Large"
+            android:text="Large Text"
+            android:id="@+id/tvContact" />
 
-    <TextView
-        style="@style/tv.Small"
-        android:text="Small Text"
-        android:id="@+id/tvLastMessage" />
-</LinearLayout>
+        <TextView
+            style="@style/tv.Small"
+            android:text="Small Text"
+            android:id="@+id/tvLastMessage" />
+    </LinearLayout>
+
+    </LinearLayout>

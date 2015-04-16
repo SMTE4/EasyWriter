@@ -11,6 +11,7 @@ public class Message {
     public String text;
     public Date datum;
 
+
     public void setMessage(String tekst, Date datum){
         this.datum = datum;
         this.text = tekst;

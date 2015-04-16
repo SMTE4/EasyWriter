@@ -1,5 +1,8 @@
 package com.kargathia.easywriter;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,9 +15,12 @@ public class Contact {
     public List<Message> messages;
     public int lastMessage = 0;
     public  String nummer = "No number";
+    public Drawable image;
+    private Context context;
 
-    public Contact(String naam,String nummer, List<Message> messageList)
+    public Contact(Context contaxt, String naam,String nummer, List<Message> messageList, Drawable image)
     {
+        this.context = contaxt;
         this.name = naam;
         if(messageList == null)
         {
@@ -24,12 +30,19 @@ public class Contact {
             this.messages = messageList;
             this.lastMessage = messageList.size();
         }
-
-            this.nummer = nummer;
+        if(image == null)
+        {
+            this.image =  context.getResources().getDrawable(R.drawable.contact_icon);
+        }
+        else
+        {
+            this.image = image;
+        }
+        this.nummer = nummer;
     }
-    public void addMessage(String message, Date datum)
+    public void addMessage(Message message)
     {
-//        messages.add(new Message(message, datum));
+        messages.add(message);
     }
 
 }
