@@ -6,3 +6,4 @@
 .DS_Store
 /build
 /libraries/tess-two/build
+\libraries\tess-two\build

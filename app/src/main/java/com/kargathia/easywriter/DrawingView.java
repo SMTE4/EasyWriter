@@ -156,13 +156,15 @@ public class DrawingView extends View {
     }
 
     private void setOutputText(String input){
+        if(display == null){
+            return;
+        }
         this.recognisedText = input;
         if(recognisedText.trim().isEmpty()){
             display.setText("[SPACE]");
         } else {
             display.setText(recognisedText);
         }
-//        display.append(" >");
     }
 
     /**
@@ -184,7 +186,7 @@ public class DrawingView extends View {
             Log.e("tag", "Failed to get asset file list.", e);
         }
         for(String filename : files) {
-            Log.i("filename", filename);
+//            Log.i("filename", filename);
             InputStream in = null;
             OutputStream out = null;
             try {
