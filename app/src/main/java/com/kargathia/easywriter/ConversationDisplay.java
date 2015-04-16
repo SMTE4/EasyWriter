@@ -15,12 +15,19 @@ import android.widget.Toast;
 
 public class ConversationDisplay extends Activity {
 
-    private RelativeLayout layoutHistory;
+    private RelativeLayout
+            layoutMessageButtons,
+            layoutHistory;
     private TextView
             tvDrawPrompt,
-            tvSwipeRightPrompt;
+            tvLetterDisplay,
+            ph_tvMessageDisplay;
+//            tvSwipeRightPrompt;
     private DrawingView dvDrawDisplay;
-    private Button btnSendMessage;
+    private Button
+            btnSendMessage,
+            btnBack,
+            btnAccept;
     private int number = 0;
     private Contact contact = null;
     private ContactProvider provider = ContactProvider.getInstance();
@@ -30,27 +37,25 @@ public class ConversationDisplay extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_display);
 
-        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
-        layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
-        layoutHistory.setOnTouchListener(activitySwipeDetector);
-
-        TextView tv = (TextView)this.findViewById(R.id.tvContactName);
+        TextView tvContactName = (TextView)this.findViewById(R.id.tvContactName);
 
         Intent intent = getIntent();
         number = intent.getIntExtra("ContactPosition", -1);
         if(number != -1){
             System.out.println(number);
             contact = provider.contacten.get(number);
-            tv.setText(contact.name);
+            tvContactName.setText(contact.name);
         }
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
         this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
-        this.btnSendMessage = (Button) this.findViewById(R.id.btnSendMessage);
-        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
+        this.ph_tvMessageDisplay = (TextView) this.findViewById(R.id.ph_tvMessageDisplay);
+        this.tvLetterDisplay = (TextView) this.findViewById(R.id.tvLetterDisplay);
+//        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
 
-        dvDrawDisplay.setOutput(tvSwipeRightPrompt);
+        dvDrawDisplay.setOutput(tvLetterDisplay);
+        dvDrawDisplay.resetCanvas();
 
         this.setOnClicks();
     }
@@ -79,31 +84,62 @@ public class ConversationDisplay extends Activity {
     }
 
     private void setOnClicks() {
+        this.btnSendMessage = (Button) this.findViewById(R.id.btnSendMessage);
+        this.btnBack = (Button) this.findViewById(R.id.btnBackMessage);
+        this.btnAccept = (Button) this.findViewById(R.id.btnAcceptMessage);
+        this.layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
+
+
+        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
+//        layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
+//        layoutMessageButtons.setOnTouchListener(activitySwipeDetector);
+        layoutHistory.setOnTouchListener(activitySwipeDetector);
+//        btnAccept.setOnTouchListener(activitySwipeDetector);
+//        btnSendMessage.setOnTouchListener(activitySwipeDetector);
+//        btnBack.setOnTouchListener(activitySwipeDetector);
+
         // send message
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayToast("sending message: " + tvDrawPrompt.getText());
+                displayToast("sending message: " + ph_tvMessageDisplay.getText());
             }
         });
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptGesture();
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backGesture();
+            }
+        });
+
     }
 
     public void backGesture() {
-        String text = tvDrawPrompt.getText().toString();
+        String text = ph_tvMessageDisplay.getText().toString();
         int length = text.length();
         if(dvDrawDisplay.resetCanvas()){
             displayToast("wiped");
             return;
         } else if (length > 0) {
             text = text.substring(0, length - 1);
-            tvDrawPrompt.setText(text);
+            ph_tvMessageDisplay.setText(text);
         } else {
             displayToast("going back now");
         }
     }
 
     public void acceptGesture() {
-        displayToast("adding letter: " + dvDrawDisplay.getRecognisedText());
+        String letter = dvDrawDisplay.getRecognisedText();
+//        displayToast("adding letter: " + );
+        ph_tvMessageDisplay.append(letter);
         dvDrawDisplay.resetCanvas();
     }
 

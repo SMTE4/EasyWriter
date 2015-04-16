@@ -19,4 +19,6 @@
     <string name="swipeRightPrompt">\u2713 &gt;</string>
     <string name="title_activity_conversation_display">ConversationDisplay</string>
     <string name="title_activity_new_conversation">New Conversation</string>
+    <string name="SendMessagePrompt">Send</string>
+    <string name="acceptletter">Ok</string>
 </resources>

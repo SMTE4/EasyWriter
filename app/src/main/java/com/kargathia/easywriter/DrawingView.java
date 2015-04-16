@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -28,6 +27,10 @@ import java.io.OutputStream;
 public class DrawingView extends View {
     private static final Object READING_LOCK = "";
 
+    private static boolean isTessInit = false;
+    private static TessBaseAPI baseAPI;
+    private static String dataPath;
+
     //drawing path
     private Path drawPath;
     //drawing and canvas paint
@@ -43,8 +46,8 @@ public class DrawingView extends View {
     private boolean
             isReading = false,
             isDrawing = false;
-    private String dataPath;
-    private TessBaseAPI baseApi;
+//    private String dataPath;
+//    private TessBaseAPI baseApi;
 
     private Context context;
 
@@ -57,9 +60,7 @@ public class DrawingView extends View {
         setupDrawing();
         this.context = context;
 
-        this.copyAssets();
-        this.baseApi = new TessBaseAPI();
-        baseApi.init(dataPath, "eng");
+
     }
 
     private void setupDrawing() {
@@ -77,6 +78,18 @@ public class DrawingView extends View {
     public void setOutput(TextView display) {
         this.display = display;
         this.setOutputText(" ");
+
+//        synchronized(READING_LOCK){
+            if(!isTessInit){
+                isTessInit = true;
+                this.copyAssets();
+                baseAPI = new TessBaseAPI();
+                baseAPI.init(dataPath, "eng");
+//                isReading = true;
+//                isDrawing = true;
+//                resetCanvas();
+            }
+//        }
     }
 
     public boolean resetCanvas(){
@@ -136,8 +149,8 @@ public class DrawingView extends View {
 
 
     private String detectText(Bitmap bitmap) {
-        baseApi.setImage(bitmap);
-        String output = baseApi.getUTF8Text();
+        baseAPI.setImage(bitmap);
+        String output = baseAPI.getUTF8Text();
         Log.i("recognisedText", output);
         return output;
     }
@@ -149,7 +162,7 @@ public class DrawingView extends View {
         } else {
             display.setText(recognisedText);
         }
-        display.append(" >");
+//        display.append(" >");
     }
 
     /**
@@ -200,6 +213,7 @@ public class DrawingView extends View {
             }
         }
     }
+
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;

@@ -29,7 +29,7 @@ public class Contact {
     }
     public void addMessage(String message, Date datum)
     {
-        messages.add(new Message(message, datum));
+//        messages.add(new Message(message, datum));
     }
 
 }
