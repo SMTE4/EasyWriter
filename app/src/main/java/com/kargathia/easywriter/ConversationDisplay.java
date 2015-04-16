@@ -22,7 +22,6 @@ public class ConversationDisplay extends Activity {
             tvDrawPrompt,
             tvLetterDisplay,
             ph_tvMessageDisplay;
-//            tvSwipeRightPrompt;
     private DrawingView dvDrawDisplay;
     private Button
             btnSendMessage,
@@ -55,7 +54,6 @@ public class ConversationDisplay extends Activity {
 //        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
 
         dvDrawDisplay.setOutput(tvLetterDisplay);
-        dvDrawDisplay.resetCanvas();
 
         this.setOnClicks();
     }
@@ -90,13 +88,14 @@ public class ConversationDisplay extends Activity {
         this.layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
 
 
-        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
-//        layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
+//        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
+        layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
 //        layoutMessageButtons.setOnTouchListener(activitySwipeDetector);
-        layoutHistory.setOnTouchListener(activitySwipeDetector);
-//        btnAccept.setOnTouchListener(activitySwipeDetector);
-//        btnSendMessage.setOnTouchListener(activitySwipeDetector);
-//        btnBack.setOnTouchListener(activitySwipeDetector);
+
+        layoutHistory.setOnTouchListener(new ActivitySwipeDetector(this, layoutHistory, layoutMessageButtons));
+        btnAccept.setOnTouchListener(new ActivitySwipeDetector(this, btnAccept, layoutMessageButtons));
+        btnSendMessage.setOnTouchListener(new ActivitySwipeDetector(this, btnSendMessage, layoutMessageButtons));
+        btnBack.setOnTouchListener(new ActivitySwipeDetector(this, btnBack, layoutMessageButtons));
 
         // send message
         btnSendMessage.setOnClickListener(new View.OnClickListener() {

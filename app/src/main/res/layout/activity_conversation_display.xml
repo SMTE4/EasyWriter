@@ -24,7 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="message"
-        android:id="@+id/ph_tvMessageDisplay" />
+        android:id="@+id/ph_tvMessageDisplay"
+        android:background="@color/primary_text_default_material_dark" />
 
     <RelativeLayout
         android:id="@+id/layoutNewMessage"
@@ -68,21 +69,27 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
+                android:text="@string/back"
                 android:id="@+id/btnBackMessage"
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/btnSendMessage" />
+                android:layout_toLeftOf="@+id/btnSendMessage"
+                android:clickable="true" />
 
             <Button
                 android:id="@+id/btnSendMessage"
                 style="@style/Button"
                 android:text="@string/SendMessagePrompt"
                 android:layout_alignParentBottom="false"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentTop="false"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:minWidth="120dp"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentEnd="false"
+                android:clickable="true"
+                android:nestedScrollingEnabled="true" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -92,7 +99,8 @@
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnSendMessage" />
+                android:layout_toRightOf="@+id/btnSendMessage"
+                android:clickable="true" />
         </RelativeLayout>
 
         <TextView

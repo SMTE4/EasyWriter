@@ -79,17 +79,12 @@ public class DrawingView extends View {
         this.display = display;
         this.setOutputText(" ");
 
-//        synchronized(READING_LOCK){
             if(!isTessInit){
                 isTessInit = true;
                 this.copyAssets();
                 baseAPI = new TessBaseAPI();
                 baseAPI.init(dataPath, "eng");
-//                isReading = true;
-//                isDrawing = true;
-//                resetCanvas();
             }
-//        }
     }
 
     public boolean resetCanvas(){
@@ -109,6 +104,11 @@ public class DrawingView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         drawCanvas = new Canvas(canvasBitmap);
+
+        // reboots canvas, recognising gestures
+        // I literally have no idea why this works.
+        isDrawing = true;
+        resetCanvas();
     }
 
     @Override
