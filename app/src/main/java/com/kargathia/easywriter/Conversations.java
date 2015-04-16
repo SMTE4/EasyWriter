@@ -2,14 +2,21 @@ package com.kargathia.easywriter;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import android.provider.ContactsContract;
@@ -56,17 +63,23 @@ public class Conversations extends Activity {
 
         Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
+
         //voor elke contact met telefoonnummer in de telefoon
         if(cursor.getCount()>0)
         {
             while(cursor.moveToNext())
             {
                 String phone_number = "No number";
+
                 String naam = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 int number = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
                 String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String phone_id =ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+
+                System.out.println(contact_id);
                 System.out.println(naam);
+
+                //nummer ophalen per persoon
                 if(number>0) {
                     Cursor phone_cursor = contantResolver.query(phone_uri, null, phone_id + " = ?", new String[]{contact_id}, null);
                     while (phone_cursor.moveToNext()) {
@@ -74,15 +87,48 @@ public class Conversations extends Activity {
                     }
                     phone_cursor.close();
                 }
-                contact.add(new Contact(naam, phone_number, null));
+                //plaatje ophalen
+                Drawable image = null;
+                InputStream input = openPhoto(contant_uri, Long.parseLong(contact_id));
+                if(input != null) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(input);
+                    image = new BitmapDrawable(bitmap);
+                }
+
+                contact.add(new Contact(this,naam, phone_number, null, image));
             }
         }
         cursor.close();
 
         //ophalen berichten
+
+
         
         return contact;
     }
+
+    public InputStream openPhoto(Uri contact_uri, long contactId) {
+
+        Uri contactUri = ContentUris.withAppendedId(contact_uri, contactId);
+        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        Cursor cursor = getContentResolver().query(photoUri,new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                byte[] data = cursor.getBlob(0);
+                if (data != null) {
+                    return new ByteArrayInputStream(data);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+        return null;
+    }
+
+
 
 
     @Override
