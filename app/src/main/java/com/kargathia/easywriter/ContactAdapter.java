@@ -9,7 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Kargathia on 02/04/2015.
@@ -17,6 +19,7 @@ import java.util.List;
 public class ContactAdapter extends ArrayAdapter<Contact> {
     private Context context;
     private List<Contact> contacts;
+    private Locale currentLocale = Locale.US;
     /**
      * Constructor
      *
@@ -44,11 +47,29 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
             view  = inflater.inflate(R.layout.contacts_item, null);
         }
         ImageView iv1 = (ImageView) view.findViewById(R.id.ivContact);
-        iv1.setImageDrawable(contact.image);
+        iv1.setImageDrawable(contact.getImage());
         TextView tv1 = (TextView) view.findViewById(R.id.tvContact);
-        tv1.setText(contact.name);
+        tv1.setText(contact.getName());
+
         TextView tv2 = (TextView) view.findViewById(R.id.tvLastMessage);
-            tv2.setText(contact.nummer);
+        if(contact.getLastMessage() == null) {
+            tv2.setText("There are no messages");
+        }
+        else
+        {
+            String date = DateFormat.getDateInstance(DateFormat.LONG, currentLocale).format(contact.getMessages().get(contact.getMessages().size()-1).getDate());
+            String last = "; ";
+            String text = contact.getMessages().get(contact.getMessages().size()-1).getText();
+            String end = text;
+            if(text.length()>30)
+            {
+                end = end.substring(0,30);
+            }
+            String dot = "...";
+            tv2.setText(date + last + end + dot);
+        }
+
+
         return view;
     }
 }

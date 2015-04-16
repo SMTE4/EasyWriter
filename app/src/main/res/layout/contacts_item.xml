@@ -23,7 +23,7 @@
 
         <TextView
             style="@style/tv.Small"
-            android:text="Small Text"
+            android:text="Last message; This is the last message from this contact"
             android:id="@+id/tvLastMessage" />
     </LinearLayout>
 

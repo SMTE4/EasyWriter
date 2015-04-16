@@ -42,8 +42,14 @@ public class ConversationDisplay extends Activity {
         number = intent.getIntExtra("ContactPosition", -1);
         if(number != -1){
             System.out.println(number);
-            contact = provider.contacten.get(number);
-            tvContactName.setText(contact.name);
+            for(Contact x : provider.getSmsContacten())
+            {
+                if(x.getID() == number)
+                {
+                    contact = x;
+                }
+            }
+            tvContactName.setText(contact.getName());
         }
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
