@@ -32,6 +32,7 @@ import android.widget.ListView;
 public class Conversations extends Activity {
 
     ContactProvider provider = ContactProvider.getInstance();
+    private int id = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +54,14 @@ public class Conversations extends Activity {
                 //Todo start intent and pass name using putExtra
                 Intent intent = new Intent(Conversations.this,ConversationDisplay.class);
                 //doorsturen contactpersoon
-                intent.putExtra("ContactPosition",position);
+                intent.putExtra("ContactPosition",provider.getSmsContacten().get(position).getID());
                 startActivity(intent);
             }
         });
     }
     public List<Contact> getContacts() {
-        List<Contact> contact = new ArrayList();
+        List<Contact> contact = new ArrayList<Contact>();
+        List<Contact> smsContacten = new ArrayList<Contact>();
         //ophalen contacten
         Uri contant_uri = ContactsContract.Contacts.CONTENT_URI;
         ContentResolver contantResolver = getContentResolver();
@@ -94,8 +96,20 @@ public class Conversations extends Activity {
                     Bitmap bitmap = BitmapFactory.decodeStream(input);
                     image = new BitmapDrawable(bitmap);
                 }
+                Contact tijdelijk = new Contact(id,this, naam, phone_number, image);
                 if(!phone_number.equals("No number")) {
-                    contact.add(new Contact(this, naam, phone_number, image));
+                    boolean bestaat =false;
+                    for(Contact x : contact)
+                    {
+                        if(x.getNummer().equals(tijdelijk.getNummer()))
+                        {
+                            bestaat = true;
+                        }
+                    }
+                    if(bestaat == false) {
+                        contact.add(tijdelijk);
+                        id++;
+                    }
                 }
             }
         }
@@ -120,8 +134,6 @@ public class Conversations extends Activity {
             }
         }
 
-
-
         for (Message x : smsList) {
             for (Contact a : contact) {
                 if (x.getFrom().equals(a.getNummer())) {
@@ -130,9 +142,20 @@ public class Conversations extends Activity {
             }
         }
         c.close();
+
+        //contacten sorteren
+        Collections.sort(contact, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact c1, Contact c2) {
+                String name1 = c1.getName().toLowerCase();
+                String name2 = c2.getName().toLowerCase();
+                return name1.compareTo(name2);
+            }
+        });
+
         //berichten sorterren
         for(Contact x : contact) {
-            if (x.getLastMessage()!=0) {
+            if (x.getMessages().size()>0) {
                 List<Message> messages = x.getMessages();
                 Collections.sort(messages, new Comparator<Message>() {
                     @Override
@@ -143,20 +166,23 @@ public class Conversations extends Activity {
                     }
                 });
                 x.setSortedMessages(messages);
-                provider.addContactToSms(x);
+                smsContacten.add(x);
+                x.setLastMessage(x.getMessages().get(x.getMessages().size()-1).getDate());
             }
-
-
         }
-        //contacten sorteren
-        Collections.sort(contact, new Comparator<Contact>() {
+
+        //smsconcaten sorteren op laatste bericht
+
+        Collections.sort(smsContacten, new Comparator<Contact>() {
             @Override
             public int compare(Contact c1, Contact c2) {
-                String name1 = c1.getName().toLowerCase();
-                String name2 = c2.getName().toLowerCase();
-                return name1.compareTo(name2);
+                Date name1 = c1.getLastMessage();
+                Date name2 = c2.getLastMessage();
+                return name2.compareTo(name1);
             }
         });
+        provider.setSmsContacten(smsContacten);
+
         return contact;
     }
 

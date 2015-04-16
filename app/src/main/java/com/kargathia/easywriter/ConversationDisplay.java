@@ -43,7 +43,13 @@ public class ConversationDisplay extends Activity {
         number = intent.getIntExtra("ContactPosition", -1);
         if(number != -1){
             System.out.println(number);
-            contact = provider.getContacten().get(number);
+            for(Contact x : provider.getSmsContacten())
+            {
+                if(x.getID() == number)
+                {
+                    contact = x;
+                }
+            }
             tvContactName.setText(contact.getName());
         }
 

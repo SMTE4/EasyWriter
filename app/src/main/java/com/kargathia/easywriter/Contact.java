@@ -13,13 +13,15 @@ import java.util.List;
 public class Contact{
     private String name;
     private List<Message> messages;
-    private int lastMessage = 0;
+    private Date lastMessage = null;
     private  String nummer = "No number";
     private Drawable image;
     private Context context;
+    private int id = 0;
 
-    public Contact(Context contaxt, String naam,String nummer, Drawable image) {
+    public Contact(int id,Context contaxt, String naam,String nummer, Drawable image) {
         this.context = contaxt;
+        this.id = id;
         this.name = naam;
 
         this.messages = new ArrayList();
@@ -34,7 +36,6 @@ public class Contact{
     public void addMessage(Message message)
     {
         messages.add(message);
-        lastMessage = messages.size();
     }
 
     public String getName(){
@@ -43,17 +44,24 @@ public class Contact{
     public List<Message> getMessages(){
         return this.messages;
     }
-    public int getLastMessage(){
-        return this.lastMessage;
-    }
     public String getNummer(){
         return this.nummer;
     }
     public Drawable getImage(){
         return this.image;
     }
+    public int getID(){
+        return this.id;
+    }
+    public Date getLastMessage(){
+        return  this.lastMessage;
+    }
     public void setSortedMessages(List<Message> list)
     {
         this.messages = list;
+    }
+    public void setLastMessage(Date date)
+    {
+        this.lastMessage = date;
     }
 }

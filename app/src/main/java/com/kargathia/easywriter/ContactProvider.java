@@ -40,8 +40,8 @@ public class ContactProvider {
     {
         this.contacten = list;
     }
-    public void addContactToSms(Contact c)
+    public  void setSmsContacten(List<Contact> list)
     {
-        this.smsContacten.add(c);
+        this.smsContacten = list;
     }
 }

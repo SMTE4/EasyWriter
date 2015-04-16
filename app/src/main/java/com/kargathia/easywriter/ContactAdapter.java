@@ -52,14 +52,14 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         tv1.setText(contact.getName());
 
         TextView tv2 = (TextView) view.findViewById(R.id.tvLastMessage);
-        if(contact.getLastMessage() == 0) {
+        if(contact.getLastMessage() == null) {
             tv2.setText("There are no messages");
         }
         else
         {
-            String date = DateFormat.getDateInstance(DateFormat.LONG, currentLocale).format(contact.getMessages().get(contact.getLastMessage()-1).getDate());
+            String date = DateFormat.getDateInstance(DateFormat.LONG, currentLocale).format(contact.getMessages().get(contact.getMessages().size()-1).getDate());
             String last = "; ";
-            String text = contact.getMessages().get(contact.getLastMessage()-1).getText();
+            String text = contact.getMessages().get(contact.getMessages().size()-1).getText();
             String end = text;
             if(text.length()>30)
             {
