@@ -26,6 +26,7 @@ import java.util.List;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 
@@ -40,7 +41,7 @@ public class Conversations extends Activity {
 
         provider.setContacten(getContacts());
 
-//Get a reference to the listview
+        //Get a reference to the listview
         ListView listview = (ListView) findViewById(R.id.lvConversationDisplay);
         //Get a reference to the list with names
 
@@ -50,12 +51,17 @@ public class Conversations extends Activity {
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-//Get the name from the array that is in the same position as the chosen listitem.
+                //Get the name from the array that is in the same position as the chosen listitem.
                 //Todo start intent and pass name using putExtra
-                Intent intent = new Intent(Conversations.this,ConversationDisplay.class);
-                //doorsturen contactpersoon
-                intent.putExtra("ContactPosition",provider.getSmsContacten().get(position).getID());
-                startActivity(intent);
+                openConvHistory(position);
+            }
+        });
+
+        Button newConversation = (Button) findViewById(R.id.btnNewConversation);
+        newConversation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newConv();
             }
         });
     }
@@ -240,11 +246,20 @@ public class Conversations extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void openConvHistory(){
-
+    public void openConvHistory(int position){
+        Intent intent = new Intent(Conversations.this,ConversationDisplay.class);
+        //doorsturen contactpersoon
+        intent.putExtra("ContactPosition",provider.getSmsContacten().get(position).getID());
+        startActivity(intent);
     }
 
     public void newConv(){
-
+        Intent intent = new Intent(Conversations.this, NewConversation.class);
+        startActivity(intent);
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        provider.setContacten(getContacts());
     }
 }

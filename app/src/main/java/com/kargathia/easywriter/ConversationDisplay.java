@@ -41,7 +41,6 @@ public class ConversationDisplay extends Activity {
         Intent intent = getIntent();
         number = intent.getIntExtra("ContactPosition", -1);
         if(number != -1){
-            System.out.println(number);
             for(Contact x : provider.getSmsContacten())
             {
                 if(x.getID() == number)
