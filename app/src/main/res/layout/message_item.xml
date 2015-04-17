@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/stat_layoutmessageitem"
+    android:weightSum="10"
+    android:padding="5dp"
+    android:nestedScrollingEnabled="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/accent_material_dark"
+        android:id="@+id/layoutMessageItem"
+        android:layout_weight="8">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lipsum"
+            android:id="@+id/tv_msg_text"
+            android:layout_gravity="left"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17-04-2015 20:14"
+            android:id="@+id/tv_msg_date"
+            android:layout_gravity="bottom|right"
+            android:layout_below="@+id/tv_msg_text"
+            android:layout_alignParentRight="true"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+</LinearLayout>

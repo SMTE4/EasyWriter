@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.kargathia.easywriter.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +23,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * How to use:
+ * - (Optional) provide a TextView displaying individual letters recognised by the OCR engine.  <br>
+ * - Use backCommand() and acceptCommand() to remove/add letters to the message based on read values. <br>
+ * Both will return the full message - backCommand() can return null, acceptCommand can't. <br>
+ * No other input is neccessary, screen wiping and OCR API initialisation happens automatically.
+ * <p/>
  * Created by Kargathia on 04/04/2015.
  */
 public class DrawingView extends View {
@@ -41,18 +48,22 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap = null;
-    private TextView display = null;
-    private String recognisedText = "unchanged";
+    private TextView tv_display;
+    private String
+            fullText = "unchanged",
+            letterText = "";
     private boolean
             isReading = false,
             isDrawing = false;
-//    private String dataPath;
-//    private TessBaseAPI baseApi;
 
     private Context context;
 
-    public String getRecognisedText() {
-        return this.recognisedText;
+    public String getFullText() {
+        return this.fullText;
+    }
+
+    public String getLetterText() {
+        return this.letterText;
     }
 
     public DrawingView(Context context, AttributeSet attrs) {
@@ -60,7 +71,12 @@ public class DrawingView extends View {
         setupDrawing();
         this.context = context;
 
-
+        if (!isTessInit && !isInEditMode()) {
+            isTessInit = true;
+            this.copyAssets();
+            baseAPI = new TessBaseAPI();
+            baseAPI.init(dataPath, "eng");
+        }
     }
 
     private void setupDrawing() {
@@ -75,22 +91,10 @@ public class DrawingView extends View {
         canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
-    public void setOutput(TextView display) {
-        this.display = display;
-        this.setOutputText(" ");
-
-        if (!isTessInit) {
-            isTessInit = true;
-            this.copyAssets();
-            baseAPI = new TessBaseAPI();
-            baseAPI.init(dataPath, "eng");
-        }
-    }
-
-    public boolean resetCanvas() {
+    private boolean resetCanvas() {
         if (isDrawing) {
             canvasBitmap.eraseColor(Color.WHITE);
-            setOutputText(" ");
+            letterText = "";
             isDrawing = false;
             invalidate();
             return true;
@@ -99,14 +103,55 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Declares what textview should show interpreted letters
+     *
+     * @param display
+     */
+    public void setLetterDisplay(TextView display) {
+        this.tv_display = display;
+    }
+
+    /**
+     * Orders drawingView to clear screen / remove last letter.
+     *
+     * @return full text, or null if full text was empty already
+     */
+    public String backCommand() {
+        if (resetCanvas()) {
+            return this.fullText;
+        } else {
+            if (this.fullText.isEmpty()) {
+                return null;
+            } else {
+                this.fullText = fullText.substring(0, fullText.length() - 1);
+                return this.fullText;
+            }
+        }
+    }
+
+    /**
+     * Accepts currently drawn letter, or adds a space if canvas was empty
+     *
+     * @return full text
+     */
+    public String acceptCommand() {
+        if (letterText.trim().isEmpty()) {
+            this.fullText += " ";
+        } else {
+            this.fullText += this.letterText;
+            this.resetCanvas();
+        }
+        return this.fullText;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         drawCanvas = new Canvas(canvasBitmap);
 
-        // reboots canvas, recognising gestures
-        // I literally have no idea why this works.
+        // reboots canvas
         isDrawing = true;
         resetCanvas();
     }
@@ -117,7 +162,15 @@ public class DrawingView extends View {
         canvas.drawPath(drawPath, drawPaint);
         synchronized (READING_LOCK) {
             if (isReading) {
-                setOutputText(detectText(canvasBitmap));
+//                setOutputText(detectText(canvasBitmap));
+                letterText = detectText(canvasBitmap);
+                if (tv_display != null) {
+                    if(letterText.isEmpty()){
+                        tv_display.setText("[SPACE]");
+                    } else {
+                        tv_display.setText(letterText);
+                    }
+                }
                 isReading = false;
             }
         }
@@ -151,20 +204,8 @@ public class DrawingView extends View {
     private String detectText(Bitmap bitmap) {
         baseAPI.setImage(bitmap);
         String output = baseAPI.getUTF8Text();
-        Log.i("recognisedText", output);
+        Log.i("fullText", output);
         return output;
-    }
-
-    private void setOutputText(String input) {
-        if (display == null) {
-            return;
-        }
-        this.recognisedText = input;
-        if (recognisedText.trim().isEmpty()) {
-            display.setText("[SPACE]");
-        } else {
-            display.setText(recognisedText);
-        }
     }
 
     /**

@@ -21,4 +21,5 @@
     <string name="title_activity_new_conversation">New Conversation</string>
     <string name="SendMessagePrompt">Send</string>
     <string name="acceptletter">Ok</string>
+    <string name="lipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec purus in ante pretium blandit. Aliquam erat volutpat. Nulla libero lectus.</string>
 </resources>

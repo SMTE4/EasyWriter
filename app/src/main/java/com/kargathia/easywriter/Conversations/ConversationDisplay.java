@@ -16,7 +16,6 @@ import com.kargathia.easywriter.Contacts.Contact;
 import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
 import com.kargathia.easywriter.Drawing.DrawingView;
-import com.kargathia.easywriter.Drawing.ISwipeResultReader;
 import com.kargathia.easywriter.R;
 
 
@@ -63,8 +62,7 @@ public class ConversationDisplay extends Activity {
         this.tvLetterDisplay = (TextView) this.findViewById(R.id.tvLetterDisplay);
 //        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
 
-        dvDrawDisplay.setOutput(tvLetterDisplay);
-
+        dvDrawDisplay.setLetterDisplay(this.tvLetterDisplay);
         this.setOnClicks();
     }
 
@@ -132,24 +130,18 @@ public class ConversationDisplay extends Activity {
     }
 
     public void backGesture() {
-        String text = ph_tvMessageDisplay.getText().toString();
-        int length = text.length();
-        if (dvDrawDisplay.resetCanvas()) {
+        String text = dvDrawDisplay.backCommand();
+        if (text != null) {
             displayToast("wiped");
-            return;
-        } else if (length > 0) {
-            text = text.substring(0, length - 1);
             ph_tvMessageDisplay.setText(text);
+            return;
         } else {
             displayToast("going back now");
         }
     }
 
     public void acceptGesture() {
-        String letter = dvDrawDisplay.getRecognisedText();
-//        displayToast("adding letter: " + );
-        ph_tvMessageDisplay.append(letter);
-        dvDrawDisplay.resetCanvas();
+        ph_tvMessageDisplay.setText(dvDrawDisplay.acceptCommand());
     }
 
     private void displayToast(String text) {

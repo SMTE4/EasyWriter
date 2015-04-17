@@ -6,7 +6,8 @@
     <RelativeLayout
         android:id="@+id/layoutHistory"
         style="@style/RV.conversation2"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        android:layout_weight="6">
 
         <TextView
             android:id="@+id/tvContactName"
@@ -16,6 +17,7 @@
             <ListView
                 android:id="@+id/lvHistory"
                 style="@style/ListView"
+                android:stackFromBottom="true"
                 android:layout_below="@+id/tvContactName" />
 
     </RelativeLayout>
@@ -27,91 +29,10 @@
         android:id="@+id/ph_tvMessageDisplay"
         android:background="@color/primary_text_default_material_dark" />
 
-    <RelativeLayout
-        android:id="@+id/layoutNewMessage"
-        style="@style/RV.conversation2"
-        android:visibility="visible"
-        android:background="@drawable/white_box">
+    <include layout="@layout/drawboard"
+        android:layout_height="220dp"
+        android:layout_width="match_parent"
+        android:id="@+id/conversation_drawboard" />
 
-        <com.kargathia.easywriter.Drawing.DrawingView
-            android:id="@+id/dvDrawDisplay"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/layoutMessageButtons"
-            android:layout_alignTop="@+id/stat_tvLeftSwipePrompt"/>
-
-        <TextView
-            android:id="@+id/stat_tvLeftSwipePrompt"
-            style="@style/tv.swipeLeft"
-            android:text="@string/swipeLeftPrompt"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/stat_tvRightSwipePrompt"
-            style="@style/tv.swipeRight"
-            android:layout_alignBottom="@+id/stat_tvLeftSwipePrompt"
-            android:text="@string/swipeRightPrompt"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/stat_tvDrawPrompt"
-            style="@style/tv.drawHere"
-            android:layout_alignBottom="@+id/dvDrawDisplay"
-            android:layout_alignTop="@+id/dvDrawDisplay"
-            android:text="@string/drawprompt" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layoutMessageButtons"
-            android:layout_alignParentBottom="true"
-            android:background="@color/background_material_dark">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/back"
-                android:id="@+id/btnBackMessage"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/btnSendMessage" />
-
-            <Button
-                android:id="@+id/btnSendMessage"
-                style="@style/Button"
-                android:text="@string/SendMessagePrompt"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentTop="false"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:minWidth="120dp"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:clickable="true"
-                android:nestedScrollingEnabled="true" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/acceptletter"
-                android:id="@+id/btnAcceptMessage"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnSendMessage"
-                android:clickable="true" />
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="[ ]"
-            android:id="@+id/tvLetterDisplay"
-            android:layout_alignTop="@+id/dvDrawDisplay"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
 
 </LinearLayout>
