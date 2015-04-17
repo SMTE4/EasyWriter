@@ -36,15 +36,13 @@ public class ConversationDisplay extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_display);
 
-        TextView tvContactName = (TextView)this.findViewById(R.id.tvContactName);
+        TextView tvContactName = (TextView) this.findViewById(R.id.tvContactName);
 
         Intent intent = getIntent();
         number = intent.getIntExtra("ContactPosition", -1);
-        if(number != -1){
-            for(Contact x : provider.getSmsContacten())
-            {
-                if(x.getID() == number)
-                {
+        if (number != -1) {
+            for (Contact x : provider.getSmsContacten()) {
+                if (x.getID() == number) {
                     contact = x;
                 }
             }
@@ -129,7 +127,7 @@ public class ConversationDisplay extends Activity {
     public void backGesture() {
         String text = ph_tvMessageDisplay.getText().toString();
         int length = text.length();
-        if(dvDrawDisplay.resetCanvas()){
+        if (dvDrawDisplay.resetCanvas()) {
             displayToast("wiped");
             return;
         } else if (length > 0) {

@@ -1,7 +1,5 @@
 package com.kargathia.easywriter;
 
-import android.view.View;
-
 import java.util.Date;
 
 /**
@@ -12,18 +10,20 @@ public class Message {
     private Date datum;
     private String from;
 
-    public String getText(){
-        return  this.text;
+    public String getText() {
+        return this.text;
     }
-    public Date getDate(){
-        return  this.datum;
+
+    public Date getDate() {
+        return this.datum;
     }
-    public String getFrom(){
-        return  this.from;
+
+    public String getFrom() {
+        return this.from;
     }
 
 
-    public void setMessage(String tekst, Date datum, String from){
+    public void setMessage(String tekst, Date datum, String from) {
         this.datum = datum;
         this.text = tekst;
         this.from = from;

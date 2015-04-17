@@ -1,6 +1,5 @@
 package com.kargathia.easywriter;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +16,7 @@ public class ActivitySwipeDetector implements View.OnTouchListener {
     private View listeningTo, animateThis;
     static final int MIN_DISTANCE = 100;
     private float
-            downX,upX,
+            downX, upX,
             translation;
     private boolean isMoving = false;
     private TranslateAnimation slideAnimation;

@@ -11,9 +11,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -23,17 +27,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import android.provider.ContactsContract;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
 
 
 public class Conversations extends Activity {
 
     ContactProvider provider = ContactProvider.getInstance();
     private int id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +50,7 @@ public class Conversations extends Activity {
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Get the name from the array that is in the same position as the chosen listitem.
                 //Todo start intent and pass name using putExtra
                 openConvHistory(position);
@@ -65,6 +65,7 @@ public class Conversations extends Activity {
             }
         });
     }
+
     public List<Contact> getContacts() {
         List<Contact> contact = new ArrayList<Contact>();
         List<Contact> smsContacten = new ArrayList<Contact>();
@@ -102,17 +103,15 @@ public class Conversations extends Activity {
                     Bitmap bitmap = BitmapFactory.decodeStream(input);
                     image = new BitmapDrawable(bitmap);
                 }
-                Contact tijdelijk = new Contact(id,this, naam, phone_number, image);
-                if(!phone_number.equals("No number")) {
-                    boolean bestaat =false;
-                    for(Contact x : contact)
-                    {
-                        if(x.getNummer().equals(tijdelijk.getNummer()))
-                        {
+                Contact tijdelijk = new Contact(id, this, naam, phone_number, image);
+                if (!phone_number.equals("No number")) {
+                    boolean bestaat = false;
+                    for (Contact x : contact) {
+                        if (x.getNummer().equals(tijdelijk.getNummer())) {
                             bestaat = true;
                         }
                     }
-                    if(bestaat == false) {
+                    if (bestaat == false) {
                         contact.add(tijdelijk);
                         id++;
                     }
@@ -130,7 +129,7 @@ public class Conversations extends Activity {
 
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
-            while(c.moveToNext()) {
+            while (c.moveToNext()) {
                 Message sms = new Message();
                 String text = c.getString(c.getColumnIndexOrThrow("body")).toString();
                 String date = c.getString(c.getColumnIndex("date")).toString();
@@ -160,8 +159,8 @@ public class Conversations extends Activity {
         });
 
         //berichten sorterren
-        for(Contact x : contact) {
-            if (x.getMessages().size()>0) {
+        for (Contact x : contact) {
+            if (x.getMessages().size() > 0) {
                 List<Message> messages = x.getMessages();
                 Collections.sort(messages, new Comparator<Message>() {
                     @Override
@@ -173,7 +172,7 @@ public class Conversations extends Activity {
                 });
                 x.setSortedMessages(messages);
                 smsContacten.add(x);
-                x.setLastMessage(x.getMessages().get(x.getMessages().size()-1).getDate());
+                x.setLastMessage(x.getMessages().get(x.getMessages().size() - 1).getDate());
             }
         }
 
@@ -204,7 +203,7 @@ public class Conversations extends Activity {
 
         Uri contactUri = ContentUris.withAppendedId(contact_uri, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        Cursor cursor = getContentResolver().query(photoUri,new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+        Cursor cursor = getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
         if (cursor == null) {
             return null;
         }
@@ -220,8 +219,6 @@ public class Conversations extends Activity {
         }
         return null;
     }
-
-
 
 
     @Override
@@ -246,19 +243,20 @@ public class Conversations extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void openConvHistory(int position){
-        Intent intent = new Intent(Conversations.this,ConversationDisplay.class);
+    public void openConvHistory(int position) {
+        Intent intent = new Intent(Conversations.this, ConversationDisplay.class);
         //doorsturen contactpersoon
-        intent.putExtra("ContactPosition",provider.getSmsContacten().get(position).getID());
+        intent.putExtra("ContactPosition", provider.getSmsContacten().get(position).getID());
         startActivity(intent);
     }
 
-    public void newConv(){
+    public void newConv() {
         Intent intent = new Intent(Conversations.this, NewConversation.class);
         startActivity(intent);
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         provider.setContacten(getContacts());
     }

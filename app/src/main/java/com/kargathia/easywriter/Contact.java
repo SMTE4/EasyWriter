@@ -10,16 +10,16 @@ import java.util.List;
 /**
  * Created by Kargathia on 02/04/2015.
  */
-public class Contact{
+public class Contact {
     private String name;
     private List<Message> messages;
     private Date lastMessage = null;
-    private  String nummer = "No number";
+    private String nummer = "No number";
     private Drawable image;
     private Context context;
     private int id = 0;
 
-    public Contact(int id,Context contaxt, String naam,String nummer, Drawable image) {
+    public Contact(int id, Context contaxt, String naam, String nummer, Drawable image) {
         this.context = contaxt;
         this.id = id;
         this.name = naam;
@@ -33,35 +33,40 @@ public class Contact{
         }
         this.nummer = nummer;
     }
-    public void addMessage(Message message)
-    {
+
+    public void addMessage(Message message) {
         messages.add(message);
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
-    public List<Message> getMessages(){
+
+    public List<Message> getMessages() {
         return this.messages;
     }
-    public String getNummer(){
+
+    public String getNummer() {
         return this.nummer;
     }
-    public Drawable getImage(){
+
+    public Drawable getImage() {
         return this.image;
     }
-    public int getID(){
+
+    public int getID() {
         return this.id;
     }
-    public Date getLastMessage(){
-        return  this.lastMessage;
+
+    public Date getLastMessage() {
+        return this.lastMessage;
     }
-    public void setSortedMessages(List<Message> list)
-    {
+
+    public void setSortedMessages(List<Message> list) {
         this.messages = list;
     }
-    public void setLastMessage(Date date)
-    {
+
+    public void setLastMessage(Date date) {
         this.lastMessage = date;
     }
 }

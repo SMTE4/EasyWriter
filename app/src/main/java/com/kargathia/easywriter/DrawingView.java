@@ -51,7 +51,7 @@ public class DrawingView extends View {
 
     private Context context;
 
-    public String getRecognisedText(){
+    public String getRecognisedText() {
         return this.recognisedText;
     }
 
@@ -79,16 +79,16 @@ public class DrawingView extends View {
         this.display = display;
         this.setOutputText(" ");
 
-            if(!isTessInit){
-                isTessInit = true;
-                this.copyAssets();
-                baseAPI = new TessBaseAPI();
-                baseAPI.init(dataPath, "eng");
-            }
+        if (!isTessInit) {
+            isTessInit = true;
+            this.copyAssets();
+            baseAPI = new TessBaseAPI();
+            baseAPI.init(dataPath, "eng");
+        }
     }
 
-    public boolean resetCanvas(){
-        if(isDrawing){
+    public boolean resetCanvas() {
+        if (isDrawing) {
             canvasBitmap.eraseColor(Color.WHITE);
             setOutputText(" ");
             isDrawing = false;
@@ -115,8 +115,8 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
-        synchronized(READING_LOCK){
-            if(isReading){
+        synchronized (READING_LOCK) {
+            if (isReading) {
                 setOutputText(detectText(canvasBitmap));
                 isReading = false;
             }
@@ -155,12 +155,12 @@ public class DrawingView extends View {
         return output;
     }
 
-    private void setOutputText(String input){
-        if(display == null){
+    private void setOutputText(String input) {
+        if (display == null) {
             return;
         }
         this.recognisedText = input;
-        if(recognisedText.trim().isEmpty()){
+        if (recognisedText.trim().isEmpty()) {
             display.setText("[SPACE]");
         } else {
             display.setText(recognisedText);
@@ -185,7 +185,7 @@ public class DrawingView extends View {
         } catch (IOException e) {
             Log.e("tag", "Failed to get asset file list.", e);
         }
-        for(String filename : files) {
+        for (String filename : files) {
 //            Log.i("filename", filename);
             InputStream in = null;
             OutputStream out = null;
@@ -194,10 +194,9 @@ public class DrawingView extends View {
                 File outFile = new File(dir, filename);
                 out = new FileOutputStream(outFile);
                 copyFile(in, out);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 Log.e("tag", "Failed to copy asset file: " + filename, e);
-            }
-            finally {
+            } finally {
                 if (in != null) {
                     try {
                         in.close();
@@ -219,7 +218,7 @@ public class DrawingView extends View {
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
-        while((read = in.read(buffer)) != -1){
+        while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
     }

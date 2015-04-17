@@ -1,7 +1,6 @@
 package com.kargathia.easywriter;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,11 +37,11 @@ public class NewConversation extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void searchContact(){
+    public void searchContact() {
 
     }
 
-    public void startConversation(){
+    public void startConversation() {
 
     }
 }
