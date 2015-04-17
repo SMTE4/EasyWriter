@@ -17,19 +17,15 @@ public class ActivitySwipeDetector implements View.OnTouchListener {
     private View listeningTo, animateThis;
     static final int MIN_DISTANCE = 100;
     private float
-            downX, downY,
-            upX, upY,
-            lastTouchX,
-            viewPosX;
-
-    private TranslateAnimation transAnim;
+            downX,upX,
+            translation;
+    private boolean isMoving = false;
+    private TranslateAnimation slideAnimation;
 
     public ActivitySwipeDetector(ConversationDisplay activity, View listeningTo, View animateThis) {
         this.activity = activity;
         this.listeningTo = listeningTo;
         this.animateThis = animateThis;
-        viewPosX = animateThis.getX();
-        Log.i("default translation", String.valueOf(animateThis.getTranslationX()));
     }
 
     public void onRightToLeftSwipe() {
@@ -42,113 +38,82 @@ public class ActivitySwipeDetector implements View.OnTouchListener {
         activity.acceptGesture();
     }
 
-    public void onTopToBottomSwipe() {
-        Log.i(logTag, "onTopToBottomSwipe!");
-//        activity.doSomething();
-    }
-
-    public void onBottomToTopSwipe() {
-        Log.i(logTag, "onBottomToTopSwipe!");
-//        activity.doSomething();
-    }
-
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 downX = event.getX();
-                downY = event.getY();
 
-                lastTouchX = downX;
-//                lastTouchY = downY;
-//                viewPosX = animateThis.getX();
-
-                if(listeningTo instanceof Button){
-                    ((Button)listeningTo).setPressed(true);
+                if (listeningTo instanceof Button) {
+                    ((Button) listeningTo).setPressed(true);
                 }
-
-                return true;
-            }
-            case MotionEvent.ACTION_MOVE:{
-                final float x = event.getX();
-//                final float y = event.getY();
-
-                // Calculate the distance moved
-                final float dx = x - lastTouchX;
-//                final float dy = y - lastTouchY;
-
-//                animateThis.animate()
-//                        .translationX(x - downX)
-//                        .setDuration(200);
-
-                // Move the object
-                animateThis.setTranslationX(x - downX);
-//                animateThis.setTranslationY(animateThis.getTranslationY() + dy);
-
-                // Remember this touch position for the next move event
-                lastTouchX = x;
-//                lastTouchY = y;
-
-                // Invalidate to request a redraw
-                animateThis.invalidate();
                 break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                final float x = event.getX();
+                final float dx = x - downX;
 
+                // start slide animation
+                if (!isMoving && Math.abs(dx) > MIN_DISTANCE) {
+                    isMoving = true;
+                    Log.i("animation", "moving now");
+                    if (dx > 0) {
+                        translation = 300;
+                    } else if (dx < 0) {
+                        translation = -300;
+                    }
+                    slideAnimation = new TranslateAnimation(0, translation, 0, 0);
+                    slideAnimation.setFillAfter(true);
+                    slideAnimation.setDuration(500);
+                    animateThis.startAnimation(slideAnimation);
+
+                    if (listeningTo instanceof Button) {
+                        ((Button) listeningTo).setPressed(false);
+                    }
+                }
+                // when reversing a viable swipe
+                if (isMoving && (dx * translation < 0) && slideAnimation.hasEnded()) {
+                    slideAnimation = new TranslateAnimation(translation, -translation, 0, 0);
+                    translation = -translation;
+                    slideAnimation.setFillAfter(true);
+                    slideAnimation.setDuration(800);
+                    animateThis.startAnimation(slideAnimation);
+                }
+                break;
             }
             case MotionEvent.ACTION_UP: {
                 upX = event.getX();
-                upY = event.getY();
-
                 float deltaX = downX - upX;
-                float deltaY = downY - upY;
 
-                try {
-                    // swipe horizontal?
-                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                        if (Math.abs(deltaX) > MIN_DISTANCE) {
-                            // left or right
-                            if (deltaX < 0) {
-                                this.onLeftToRightSwipe();
-                                return true;
-                            }
-                            if (deltaX > 0) {
-                                this.onRightToLeftSwipe();
-                                return true;
-                            }
-                        } else {
-                            Log.i(logTag, "Horizontal Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE);
-                            return false; // We don't consume the event
-                        }
+                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                    // left or right
+                    if (deltaX < 0) {
+                        this.onLeftToRightSwipe();
                     }
-                    // swipe vertical?
-                    else {
-                        if (Math.abs(deltaY) > MIN_DISTANCE) {
-                            // top or down
-                            if (deltaY < 0) {
-                                this.onTopToBottomSwipe();
-                                return true;
-                            }
-                            if (deltaY > 0) {
-                                this.onBottomToTopSwipe();
-                                return true;
-                            }
-                        } else {
-                            Log.i(logTag, "Vertical Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE);
-                            return false; // We don't consume the event
-                        }
+                    if (deltaX > 0) {
+                        this.onRightToLeftSwipe();
                     }
-                } finally {
+                } else {
+                    Log.i(logTag, "Horizontal Swipe was only " + Math.abs(deltaX)
+                            + " long, need at least " + MIN_DISTANCE);
                     if (listeningTo instanceof Button) {
                         listeningTo.performClick();
                         ((Button) listeningTo).setPressed(false);
                     }
-//                    animateThis.animate().translationX(0).setDuration(200);
-                    animateThis.setTranslationX(0);
-                    animateThis.invalidate();
-//                    TranslateAnimation returnTranslation = new TranslateAnimation()
                 }
-                return true;
+
+                // reset slide animation to starting position
+                if (isMoving) {
+                    isMoving = false;
+                    Log.i("animation", "moving back");
+                    slideAnimation = new TranslateAnimation(translation, 0, 0, 0);
+                    slideAnimation.setFillAfter(true);
+                    slideAnimation.setDuration(100);
+                    animateThis.startAnimation(slideAnimation);
+                }
+
             }
         }
-        return false;
+        return true;
     }
 
 }
