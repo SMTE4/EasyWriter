@@ -1,4 +1,4 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -18,6 +18,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.kargathia.easywriter.Contacts.Contact;
+import com.kargathia.easywriter.Contacts.ContactAdapter;
+import com.kargathia.easywriter.Contacts.ContactProvider;
+import com.kargathia.easywriter.Messaging.Message;
+import com.kargathia.easywriter.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -134,7 +140,7 @@ public class Conversations extends Activity {
                 String text = c.getString(c.getColumnIndexOrThrow("body")).toString();
                 String date = c.getString(c.getColumnIndex("date")).toString();
                 String adres = c.getString(c.getColumnIndexOrThrow("address")).toString();
-                sms.setMessage(text, millisToDate(Long.parseLong(date)), adres);
+                sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
                 smsList.add(sms);
             }
         }

@@ -1,4 +1,4 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Drawing;
 
 import android.content.Context;
 import android.content.res.AssetManager;

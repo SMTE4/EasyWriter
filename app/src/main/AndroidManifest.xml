@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Conversations"
+            android:name=".Conversations.Conversations"
             android:label="@string/app_name" >
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -20,11 +20,11 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".NewConversation"
+            android:name=".Conversations.NewConversation"
             android:label="@string/title_activity_new_conversation" >
         </activity>
         <activity
-            android:name=".ConversationDisplay"
+            android:name=".Conversations.ConversationDisplay"
             android:label="@string/title_activity_conversation_display" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,13 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kargathia.easywriter.Contacts.Contact;
+import com.kargathia.easywriter.Contacts.ContactProvider;
+import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
+import com.kargathia.easywriter.Drawing.DrawingView;
+import com.kargathia.easywriter.Drawing.ISwipeResultReader;
+import com.kargathia.easywriter.R;
 
 
 public class ConversationDisplay extends Activity {

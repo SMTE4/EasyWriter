@@ -1,9 +1,11 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.kargathia.easywriter.R;
 
 
 public class NewConversation extends Activity {

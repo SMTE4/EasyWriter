@@ -1,10 +1,12 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Drawing;
 
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+
+import com.kargathia.easywriter.Conversations.ConversationDisplay;
 
 /**
  * Created by Kargathia on 04/04/2015.

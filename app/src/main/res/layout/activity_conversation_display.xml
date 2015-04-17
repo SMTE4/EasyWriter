@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style = "@style/LV.conversation1"
-    tools:context="com.kargathia.easywriter.ConversationDisplay">
+    tools:context="com.kargathia.easywriter.Conversations.ConversationDisplay">
 
     <RelativeLayout
         android:id="@+id/layoutHistory"
@@ -33,7 +33,7 @@
         android:visibility="visible"
         android:background="@drawable/white_box">
 
-        <com.kargathia.easywriter.DrawingView
+        <com.kargathia.easywriter.Drawing.DrawingView
             android:id="@+id/dvDrawDisplay"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

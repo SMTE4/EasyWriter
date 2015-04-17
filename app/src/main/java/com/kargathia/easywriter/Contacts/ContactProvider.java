@@ -1,4 +1,4 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Contacts;
 
 import java.util.ArrayList;
 import java.util.List;

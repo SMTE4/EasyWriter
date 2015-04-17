@@ -1,7 +1,10 @@
-package com.kargathia.easywriter;
+package com.kargathia.easywriter.Contacts;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+
+import com.kargathia.easywriter.Messaging.Message;
+import com.kargathia.easywriter.R;
 
 import java.util.ArrayList;
 import java.util.Date;
