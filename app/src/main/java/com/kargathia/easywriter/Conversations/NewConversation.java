@@ -4,16 +4,32 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.kargathia.easywriter.Contacts.ContactAdapter;
+import com.kargathia.easywriter.Contacts.ContactProvider;
+import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
 import com.kargathia.easywriter.R;
 
 
-public class NewConversation extends Activity {
+public class NewConversation extends Activity implements IActivitySwipeInterpreter {
+
+    private ContactProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_conversation);
+
+        provider = ContactProvider.getInstance();
+
+        //Get a reference to the listview
+        ListView lvContacts = (ListView) findViewById(R.id.lvContacts);
+        //Get a reference to the list with names
+
+        //Create an adapter that feeds the data to the listview
+        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.getSmsContacten());
+        lvContacts.setAdapter(adapter);
     }
 
 
@@ -44,6 +60,16 @@ public class NewConversation extends Activity {
     }
 
     public void startConversation() {
+
+    }
+
+    @Override
+    public void backGesture() {
+
+    }
+
+    @Override
+    public void acceptGesture() {
 
     }
 }

@@ -16,10 +16,11 @@ import com.kargathia.easywriter.Contacts.Contact;
 import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
 import com.kargathia.easywriter.Drawing.DrawingView;
+import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
 import com.kargathia.easywriter.R;
 
 
-public class ConversationDisplay extends Activity {
+public class ConversationDisplay extends Activity implements IActivitySwipeInterpreter {
 
     private RelativeLayout
             layoutMessageButtons,
@@ -129,6 +130,7 @@ public class ConversationDisplay extends Activity {
 
     }
 
+    @Override
     public void backGesture() {
         String text = dvDrawDisplay.backCommand();
         if (text != null) {
@@ -140,6 +142,7 @@ public class ConversationDisplay extends Activity {
         }
     }
 
+    @Override
     public void acceptGesture() {
         ph_tvMessageDisplay.setText(dvDrawDisplay.acceptCommand());
     }

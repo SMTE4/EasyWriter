@@ -7,14 +7,16 @@
         style="@style/tv.New"
         android:id="@+id/stat_tvNewConversation" />
 
-    <SearchView
-        style="@style/SearchView"
-        android:id="@+id/svSearchContact"
-        android:layout_below="@+id/stat_tvNewConversation" />
+    <!--<SearchView-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:id="@+id/svSearchContact"-->
+        <!--android:layout_below="@+id/stat_tvNewConversation" />-->
 
     <ListView
-        style="@style/ListView"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:id="@+id/lvContacts"
-        android:layout_below="@+id/svSearchContact" />
+        android:layout_below="@+id/stat_tvNewConversation" />
 
 </RelativeLayout>

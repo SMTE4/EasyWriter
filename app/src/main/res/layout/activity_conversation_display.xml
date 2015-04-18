@@ -1,13 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style = "@style/LV.conversation1"
-    tools:context="com.kargathia.easywriter.Conversations.ConversationDisplay">
+    tools:context="com.kargathia.easywriter.Conversations.ConversationDisplay"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layoutHistory"
         style="@style/RV.conversation2"
         android:paddingBottom="20dp"
-        android:layout_weight="6">
+        android:layout_weight="6"
+        android:layout_width="match_parent">
 
         <TextView
             android:id="@+id/tvContactName"
@@ -16,7 +18,8 @@
 
             <ListView
                 android:id="@+id/lvHistory"
-                style="@style/ListView"
+                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
                 android:stackFromBottom="true"
                 android:layout_below="@+id/tvContactName" />
 

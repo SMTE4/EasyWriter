@@ -76,8 +76,6 @@
     <style name="tv.conversations" parent="TextView">
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_alignParentTop">false</item>
-        <item name="android:layout_alignParentEnd">false</item>
-        <item name="android:layout_alignParentStart">false</item>
         <item name="android:layout_alignParentLeft">false</item>
         <item name="android:layout_alignParentRight">false</item>
         <item name="android:textSize">20sp</item>
@@ -94,16 +92,16 @@
         <item name="android:layout_centerHorizontal">true</item>
     </style>
 
-    <style name="ListView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-    <style name="SearchView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-    <style name="ScrollView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
+    <!--<style name="ListView">-->
+        <!--<item name="android:layout_width">match_parent</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--</style>-->
+    <!--<style name="SearchView">-->
+        <!--<item name="android:layout_width">wrap_content</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--</style>-->
+    <!--<style name="ScrollView">-->
+        <!--<item name="android:layout_width">match_parent</item>-->
+        <!--<item name="android:layout_height">match_parent</item>-->
+    <!--</style>-->
 </resources>

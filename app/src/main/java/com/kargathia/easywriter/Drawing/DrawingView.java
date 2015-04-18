@@ -27,7 +27,10 @@ import java.io.OutputStream;
  * - (Optional) provide a TextView displaying individual letters recognised by the OCR engine.  <br>
  * - Use backCommand() and acceptCommand() to remove/add letters to the message based on read values. <br>
  * Both will return the full message - backCommand() can return null, acceptCommand can't. <br>
- * No other input is neccessary, screen wiping and OCR API initialisation happens automatically.
+ * No other input is neccessary, screen wiping and OCR API initialisation happens automatically. <br>
+ * DrawingView keeps track of both the full message, and the currently (unaccepted) interpreted drawing.
+ * If a TextView is provided, it will automatically update read letter. <br>
+ * Full message needs to be retrieved by calling backCommand and acceptCommand.
  * <p/>
  * Created by Kargathia on 04/04/2015.
  */
@@ -41,16 +44,20 @@ public class DrawingView extends View {
     //drawing path
     private Path drawPath;
     //drawing and canvas paint
-    private Paint drawPaint, canvasPaint;
+    private Paint
+            drawPaint,
+            canvasPaint;
     //initial color
-    private int paintColor = 0xFF000000;
+    private int paintColor = Color.BLACK;
+    // canvas color
+    private int canvasColor = Color.WHITE;
     //canvas
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap = null;
     private TextView tv_display;
     private String
-            fullText = "unchanged",
+            fullText = "",
             letterText = "";
     private boolean
             isReading = false,
@@ -79,6 +86,9 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Initialises all variables to do with painting
+     */
     private void setupDrawing() {
         drawPath = new Path();
         drawPaint = new Paint();
@@ -91,9 +101,13 @@ public class DrawingView extends View {
         canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
+    /**
+     * Wipes the canvas, setting it fully to canvasColor
+     * @return false it canvas was already clear.
+     */
     private boolean resetCanvas() {
         if (isDrawing) {
-            canvasBitmap.eraseColor(Color.WHITE);
+            canvasBitmap.eraseColor(canvasColor);
             letterText = "";
             isDrawing = false;
             invalidate();
@@ -156,13 +170,16 @@ public class DrawingView extends View {
         resetCanvas();
     }
 
+    /**
+     * View is invalidated whenever user draws, calling this for interpretation.
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
         synchronized (READING_LOCK) {
             if (isReading) {
-//                setOutputText(detectText(canvasBitmap));
                 letterText = detectText(canvasBitmap);
                 if (tv_display != null) {
                     if(letterText.isEmpty()){
@@ -176,6 +193,11 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Interprets touch events as drawing.
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
@@ -200,7 +222,11 @@ public class DrawingView extends View {
         return true;
     }
 
-
+    /**
+     * Calls on library to interpret given bitmap
+     * @param bitmap
+     * @return
+     */
     private String detectText(Bitmap bitmap) {
         baseAPI.setImage(bitmap);
         String output = baseAPI.getUTF8Text();
@@ -256,6 +282,12 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Copies individual file
+     * @param in
+     * @param out
+     * @throws IOException
+     */
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;

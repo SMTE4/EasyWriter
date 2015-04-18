@@ -1,5 +1,7 @@
 package com.kargathia.easywriter.Contacts;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class ContactProvider {
     }
 
     public List<Contact> getSmsContacten() {
+        Log.i("contacts", String.valueOf(this.smsContacten.size()));
         return this.smsContacten;
     }
 
