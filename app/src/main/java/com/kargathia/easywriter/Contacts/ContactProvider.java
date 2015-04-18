@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,6 +33,7 @@ public class ContactProvider {
     private List<Contact>
             contacten,
             smsContacten;
+    private HashMap<Integer, Contact> contactMap;
 
     public List<Contact> getContacten() {
         return contacten;
@@ -41,6 +43,9 @@ public class ContactProvider {
         return smsContacten;
     }
 
+    public Contact getContactByID(int ID) {
+        return contactMap.get(ID);
+    }
 
     public static ContactProvider getInstance() {
         if (instance == null) {
@@ -56,6 +61,11 @@ public class ContactProvider {
 
     public void setContacten(List<Contact> list) {
         this.contacten = list;
+
+        contactMap = new HashMap<>();
+        for (Contact c : contacten) {
+            contactMap.put(c.getID(), c);
+        }
     }
 
     public void setSmsContacten(List<Contact> list) {
@@ -66,85 +76,106 @@ public class ContactProvider {
         int id = 0;
         List<Contact> contact = new ArrayList<>();
         List<Contact> smsContacten = new ArrayList<>();
-        //ophalen contacten
-        Uri contant_uri = ContactsContract.Contacts.CONTENT_URI;
-        ContentResolver contantResolver = context.getContentResolver();
-        Cursor cursor = contantResolver.query(contant_uri, null, null, null, null);
-        manager.startManagingCursor(cursor);
 
-        Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        Uri uri = null;
+        ContentResolver resolver = null;
+        Cursor cursor = null;
 
-        Log.i("retrieving contacts", String.valueOf(cursor.getCount()));
-        //voor elke contact met telefoonnummer in de telefoon
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String phone_number = "No number";
+        try {
+            //ophalen contacten
+            uri = ContactsContract.Contacts.CONTENT_URI;
+            resolver = context.getContentResolver();
+            cursor = resolver.query(uri, null, null, null, null);
+//            manager.startManagingCursor(cursor);
 
-                String naam = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                int number = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String phone_id = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+            Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+            Log.i("retrieving contacts", String.valueOf(cursor.getCount()));
+            //voor elke contact met telefoonnummer in de telefoon
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    String phone_number = "No number";
+
+                    String naam = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    int number = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                    String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    String phone_id = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
 
 
-                //nummer ophalen per persoon
-                if (number > 0) {
-                    Cursor phone_cursor = contantResolver.query(phone_uri, null, phone_id + " = ?", new String[]{contact_id}, null);
-                    while (phone_cursor.moveToNext()) {
-                        phone_number = phone_cursor.getString(phone_cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    }
-                    phone_cursor.close();
-                }
-                //plaatje ophalen
-                Drawable image = null;
-                InputStream input = openPhoto(contant_uri, Long.parseLong(contact_id), context);
-                if (input != null) {
-                    Bitmap bitmap = BitmapFactory.decodeStream(input);
-                    image = new BitmapDrawable(bitmap);
-                }
-                Contact tijdelijk = new Contact(id, context, naam, phone_number, image);
-                if (!phone_number.equals("No number")) {
-                    boolean bestaat = false;
-                    for (Contact x : contact) {
-                        if (x.getNummer().equals(tijdelijk.getNummer())) {
-                            bestaat = true;
+                    //nummer ophalen per persoon
+                    if (number > 0) {
+                        Cursor phone_cursor = resolver.query(phone_uri, null, phone_id + " = ?", new String[]{contact_id}, null);
+                        while (phone_cursor.moveToNext()) {
+                            phone_number = phone_cursor.getString(phone_cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         }
+                        phone_cursor.close();
                     }
-                    if (!bestaat) {
-                        contact.add(tijdelijk);
-                        id++;
+                    //plaatje ophalen
+                    Drawable image = null;
+                    InputStream input = openPhoto(uri, Long.parseLong(contact_id), context);
+                    if (input != null) {
+                        Bitmap bitmap = BitmapFactory.decodeStream(input);
+                        image = new BitmapDrawable(bitmap);
+                    }
+                    Contact tijdelijk = new Contact(id, context, naam, phone_number, image);
+                    if (!phone_number.equals("No number")) {
+                        boolean bestaat = false;
+                        for (Contact x : contact) {
+                            if (x.getNummer().equals(tijdelijk.getNummer())) {
+                                bestaat = true;
+                            }
+                        }
+                        if (!bestaat) {
+                            contact.add(tijdelijk);
+                            id++;
+                        }
                     }
                 }
             }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = null;
+            uri = null;
+            resolver = null;
         }
-        cursor.close();
+
 
         //ophalen berichten
         List<Message> smsList = new ArrayList<>();
 
-        Uri uri = Uri.parse("content://sms/inbox");
-        Cursor c = context.getContentResolver().query(uri, null, null, null, null);
-        manager.startManagingCursor(c);
+        try {
+            uri = Uri.parse("content://sms/inbox");
+            cursor = context.getContentResolver().query(uri, null, null, null, null);
+//            manager.startManagingCursor(cursor);
 
-        // Read the sms data and store it in the list
-        if (c.moveToFirst()) {
-            while (c.moveToNext()) {
-                Message sms = new Message();
-                String text = c.getString(c.getColumnIndexOrThrow("body"));
-                String date = c.getString(c.getColumnIndex("date"));
-                String adres = c.getString(c.getColumnIndexOrThrow("address"));
-                sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
-                smsList.add(sms);
-            }
-        }
-
-        for (Message x : smsList) {
-            for (Contact a : contact) {
-                if (x.getFrom().equals(a.getNummer())) {
-                    a.addMessage(x);
+            // Read the sms data and store it in the list
+            if (cursor.moveToFirst()) {
+                while (cursor.moveToNext()) {
+                    Message sms = new Message();
+                    String text = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+                    String date = cursor.getString(cursor.getColumnIndex("date"));
+                    String adres = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+                    sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
+                    smsList.add(sms);
                 }
             }
+
+            for (Message x : smsList) {
+                for (Contact a : contact) {
+                    if (x.getFrom().equals(a.getNummer())) {
+                        a.addMessage(x);
+                    }
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = null;
+            uri = null;
         }
-        c.close();
 
         //contacten sorteren
         Collections.sort(contact, new Comparator<Contact>() {

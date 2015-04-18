@@ -2,7 +2,9 @@ package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kargathia.easywriter.Contacts.Contact;
+import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
 import com.kargathia.easywriter.Drawing.DrawingView;
 import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
@@ -20,45 +23,52 @@ import com.kargathia.easywriter.R;
 
 public class ConversationDisplay extends Activity implements IActivitySwipeInterpreter {
 
+    public static String
+            INTENT_CONTACT_ID = "com.kargathia.easywriter.contactID";
+
     private RelativeLayout
             layoutMessageButtons,
-            layoutHistory;
+            layoutHistory,
+            layoutDrawBoard;
     private TextView
             tvDrawPrompt,
             tvLetterDisplay,
-            ph_tvMessageDisplay;
+            tvContactName;
+    private TextView ph_tvMessageDisplay;
     private DrawingView dvDrawDisplay;
     private Button
             btnSendMessage,
             btnBack,
             btnAccept;
-    private int number = 0;
     private Contact contact = null;
+
+    /**
+     * Starts a ConversationDisplay from given context
+     *
+     * @param context
+     * @param contactIndex
+     */
+    public static void startNew(Context context, int contactIndex) {
+        Intent intent = new Intent(context, ConversationDisplay.class);
+        intent.putExtra(INTENT_CONTACT_ID, contactIndex);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_display);
 
-        TextView tvContactName = (TextView) this.findViewById(R.id.tvContactName);
+        this.initViews();
 
-//        Intent intent = getIntent();
-//        number = intent.getIntExtra("ContactPosition", -1);
-//        if (number != -1) {
-//            for (Contact x : provider.getSmsContacten()) {
-//                if (x.getID() == number) {
-//                    contact = x;
-//                }
-//            }
-//            tvContactName.setText(contact.getName());
-//        }
-
-//        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
-        this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
-        this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
-        this.ph_tvMessageDisplay = (TextView) this.findViewById(R.id.ph_tvMessageDisplay);
-        this.tvLetterDisplay = (TextView) this.findViewById(R.id.tvLetterDisplay);
-//        this.tvSwipeRightPrompt = (TextView) this.findViewById(R.id.stat_tvRightSwipePrompt);
+        Intent intent = getIntent();
+        int contactID = intent.getIntExtra(INTENT_CONTACT_ID, -1);
+        this.contact = ContactProvider.getInstance().getContactByID(contactID);
+        if (contact != null) {
+            tvContactName.setText(contact.getName());
+        } else {
+            Log.e("ConvDisplay init", "failed to retrieve contact");
+        }
 
         dvDrawDisplay.setLetterDisplay(this.tvLetterDisplay);
         this.setOnClicks();
@@ -87,17 +97,21 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         return super.onOptionsItemSelected(item);
     }
 
-    private void setOnClicks() {
-        this.btnSendMessage = (Button) this.findViewById(R.id.btnSendMessage);
-        this.btnBack = (Button) this.findViewById(R.id.btnBackMessage);
-        this.btnAccept = (Button) this.findViewById(R.id.btnAcceptMessage);
+    private void initViews() {
+        this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
+        this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
+        this.ph_tvMessageDisplay = (TextView) this.findViewById(R.id.ph_tvMessageDisplay);
+        this.tvLetterDisplay = (TextView) this.findViewById(R.id.tvLetterDisplay);
+        this.btnSendMessage = (Button) this.findViewById(R.id.btnAcceptAllDrawBoard);
+        this.btnBack = (Button) this.findViewById(R.id.btnBackDrawBoard);
+        this.btnAccept = (Button) this.findViewById(R.id.btnAcceptLetterDrawBoard);
         this.layoutHistory = (RelativeLayout) this.findViewById(R.id.layoutHistory);
+        this.layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
+        this.layoutDrawBoard = (RelativeLayout) this.findViewById(R.id.conversationdisplay_drawboard);
+        this.tvContactName = (TextView) this.findViewById(R.id.tvContactName);
+    }
 
-
-//        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
-        layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
-//        layoutMessageButtons.setOnTouchListener(activitySwipeDetector);
-
+    private void setOnClicks() {
         layoutHistory.setOnTouchListener(new ActivitySwipeDetector(this, layoutHistory, layoutMessageButtons));
         btnAccept.setOnTouchListener(new ActivitySwipeDetector(this, btnAccept, layoutMessageButtons));
         btnSendMessage.setOnTouchListener(new ActivitySwipeDetector(this, btnSendMessage, layoutMessageButtons));
@@ -107,7 +121,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayToast("sending message: " + ph_tvMessageDisplay.getText());
+                acceptAllGesture();
             }
         });
 
@@ -124,7 +138,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
                 backGesture();
             }
         });
-
     }
 
     @Override
@@ -144,11 +157,12 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         ph_tvMessageDisplay.setText(dvDrawDisplay.acceptCommand());
     }
 
-    private void displayToast(String text) {
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
+    @Override
+    public void acceptAllGesture() {
+        displayToast("sending message: " + ph_tvMessageDisplay.getText()); }
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+    private void displayToast(String text) {
+        int duration = Toast.LENGTH_SHORT;
+        Toast.makeText(this, text, duration).show();
     }
 }

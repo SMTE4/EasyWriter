@@ -6,4 +6,6 @@ package com.kargathia.easywriter.Drawing;
 public interface IActivitySwipeInterpreter {
     public void backGesture();
     public void acceptGesture();
+
+    public void acceptAllGesture();
 }

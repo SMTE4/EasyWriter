@@ -1,7 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/RV.conversation1"
-    tools:context="com.kargathia.easywriter.Conversations.NewConversation">
+    tools:context="com.kargathia.easywriter.Conversations.NewConversation"
+    android:layout_height="match_parent"
+    android:id="@+id/layoutContacts">
 
     <TextView android:text="@string/newConversation"
         style="@style/tv.New"
@@ -17,6 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/lvContacts"
-        android:layout_below="@+id/stat_tvNewConversation" />
+        android:layout_below="@+id/stat_tvNewConversation"
+        android:layout_above="@+id/newconversation_drawboard" />
+
+    <include
+        layout="@layout/drawboard"
+        android:layout_height="220dp"
+        android:layout_width="match_parent"
+        android:id="@+id/newconversation_drawboard"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

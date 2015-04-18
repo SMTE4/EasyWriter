@@ -35,7 +35,7 @@
     <include layout="@layout/drawboard"
         android:layout_height="220dp"
         android:layout_width="match_parent"
-        android:id="@+id/conversation_drawboard" />
+        android:id="@+id/conversationdisplay_drawboard" />
 
 
 </LinearLayout>

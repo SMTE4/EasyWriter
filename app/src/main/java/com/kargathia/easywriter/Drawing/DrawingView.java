@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
-import com.kargathia.easywriter.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,8 +38,7 @@ public class DrawingView extends View {
     private static final Object READING_LOCK = "";
 
     private static boolean isTessInit = false;
-    private static TessBaseAPI baseAPI;
-    private static String dataPath;
+    private static TessBaseAPI baseAPI = null;
 
     //drawing path
     private Path drawPath;
@@ -80,9 +79,7 @@ public class DrawingView extends View {
 
         if (!isTessInit && !isInEditMode()) {
             isTessInit = true;
-            this.copyAssets();
-            baseAPI = new TessBaseAPI();
-            baseAPI.init(dataPath, "eng");
+            new TessInitiator().execute();
         }
     }
 
@@ -181,14 +178,18 @@ public class DrawingView extends View {
         synchronized (READING_LOCK) {
             if (isReading) {
                 letterText = detectText(canvasBitmap);
-                if (tv_display != null) {
-                    if(letterText.isEmpty()){
-                        tv_display.setText("[SPACE]");
-                    } else {
-                        tv_display.setText(letterText);
-                    }
-                }
                 isReading = false;
+            }
+            if (tv_display != null) {
+                if (letterText == null) {
+                    tv_display.setText(">Loading...");
+                    letterText = "";
+                } else if (letterText.isEmpty()) {
+                    Log.i("onDraw", "isEmpty");
+                    tv_display.setText("[SPACE]");
+                } else {
+                    tv_display.setText(letterText);
+                }
             }
         }
     }
@@ -228,6 +229,10 @@ public class DrawingView extends View {
      * @return
      */
     private String detectText(Bitmap bitmap) {
+        if (baseAPI == null) {
+            Log.i("detectText", "returning null");
+            return null;
+        }
         baseAPI.setImage(bitmap);
         String output = baseAPI.getUTF8Text();
         Log.i("fullText", output);
@@ -237,8 +242,9 @@ public class DrawingView extends View {
     /**
      * Copies tessdata assets to internal phone memory, as accessing is done by path.
      */
-    private void copyAssets() {
+    private String copyAssets() {
         context = getContext();
+        String dataPath = null;
 
         AssetManager assetManager = context.getAssets();
         String[] files = null;
@@ -280,6 +286,7 @@ public class DrawingView extends View {
                 }
             }
         }
+        return dataPath;
     }
 
     /**
@@ -293,6 +300,21 @@ public class DrawingView extends View {
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
+        }
+    }
+
+    /**
+     * Performs heavy lifting of initiating the library async.
+     */
+    private class TessInitiator extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            TessBaseAPI api = new TessBaseAPI();
+            api.init(copyAssets(), "eng");
+            baseAPI = api;
+            return null;
         }
     }
 

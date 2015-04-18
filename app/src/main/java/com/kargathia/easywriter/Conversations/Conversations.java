@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kargathia.easywriter.Contacts.Contact;
 import com.kargathia.easywriter.Contacts.ContactAdapter;
@@ -52,8 +53,17 @@ public class Conversations extends Activity {
         ListView listview = (ListView) findViewById(R.id.lvConversationDisplay);
         //Get a reference to the list with names
 
+        //Displays message if no conversations found
+        List<Contact> conversations = provider.getSmsContacten();
+        TextView tvNoConvMessage = (TextView) findViewById(R.id.tvNoConversationMessage);
+        if (conversations.isEmpty()) {
+            tvNoConvMessage.setVisibility(View.VISIBLE);
+        } else {
+            tvNoConvMessage.setVisibility(View.GONE);
+        }
+
         //Create an adapter that feeds the data to the listview
-        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.getSmsContacten());
+        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, conversations);
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,7 +142,7 @@ public class Conversations extends Activity {
 
         Uri uri = Uri.parse("content://sms/inbox");
         Cursor c = getContentResolver().query(uri, null, null, null, null);
-        startManagingCursor(c);
+//        startManagingCursor(c);
 
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
@@ -253,7 +263,7 @@ public class Conversations extends Activity {
     public void openConvHistory(int position) {
         Intent intent = new Intent(Conversations.this, ConversationDisplay.class);
         //doorsturen contactpersoon
-        intent.putExtra("ContactPosition", provider.getSmsContacten().get(position).getID());
+        intent.putExtra(ConversationDisplay.INTENT_CONTACT_ID, provider.getSmsContacten().get(position).getID());
         startActivity(intent);
     }
 

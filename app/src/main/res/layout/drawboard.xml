@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-android:id="@+id/layoutNewMessage"
-style="@style/RV.conversation2"
+    android:id="@+id/layoutDrawBoard"
+    style="@style/RV.conversation2"
 android:visibility="visible"
 android:background="@drawable/white_box">
 
@@ -11,23 +11,9 @@ android:background="@drawable/white_box">
     android:id="@+id/dvDrawDisplay"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_above="@+id/layoutMessageButtons"
-    android:layout_alignTop="@+id/stat_tvLeftSwipePrompt"/>
+    android:layout_above="@+id/layoutMessageButtons" />
 
-<TextView
-    android:id="@+id/stat_tvLeftSwipePrompt"
-    style="@style/tv.swipeLeft"
-    android:text="@string/swipeLeftPrompt"
-    android:visibility="invisible" />
-
-<TextView
-    android:id="@+id/stat_tvRightSwipePrompt"
-    style="@style/tv.swipeRight"
-    android:layout_alignBottom="@+id/stat_tvLeftSwipePrompt"
-    android:text="@string/swipeRightPrompt"
-    android:visibility="invisible" />
-
-<TextView
+    <TextView
     android:id="@+id/stat_tvDrawPrompt"
     style="@style/tv.drawHere"
     android:layout_alignBottom="@+id/dvDrawDisplay"
@@ -45,14 +31,14 @@ android:background="@drawable/white_box">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:id="@+id/btnBackMessage"
+        android:id="@+id/btnBackDrawBoard"
         android:layout_alignParentBottom="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/btnSendMessage" />
+        android:layout_toLeftOf="@+id/btnAcceptAllDrawBoard" />
 
     <Button
-        android:id="@+id/btnSendMessage"
+        android:id="@+id/btnAcceptAllDrawBoard"
         style="@style/Button"
         android:text="@string/SendMessagePrompt"
         android:layout_alignParentBottom="false"
@@ -69,11 +55,11 @@ android:background="@drawable/white_box">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/acceptletter"
-        android:id="@+id/btnAcceptMessage"
+        android:id="@+id/btnAcceptLetterDrawBoard"
         android:layout_alignParentBottom="false"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/btnSendMessage"
+        android:layout_toRightOf="@+id/btnAcceptAllDrawBoard"
         android:clickable="true" />
 </RelativeLayout>
 
