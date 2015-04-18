@@ -1,7 +1,6 @@
 package com.kargathia.easywriter.Contacts;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -30,34 +29,32 @@ import java.util.List;
  */
 public class ContactProvider {
     private static ContactProvider instance = null;
-    private List<Contact> contacten;
-    private List<Contact> smsContacten;
-    private Context context;
+    private List<Contact>
+            contacten,
+            smsContacten;
 
     public List<Contact> getContacten() {
         return contacten;
     }
 
     public List<Contact> getSmsContacten() {
-        Log.i("contacts", String.valueOf(this.smsContacten.size()));
-        return this.smsContacten;
+        return smsContacten;
     }
 
-//    public static ContactProvider getInstance() {
-//        if (instance == null) {
-//            instance = new ContactProvider();
-//        }
-//        return instance;
-//    }
 
-    public ContactProvider(Context context) {
-        this.context = context;
-        this.contacten = new ArrayList<Contact>();
-        this.smsContacten = new ArrayList<Contact>();
+    public static ContactProvider getInstance() {
+        if (instance == null) {
+            instance = new ContactProvider();
+        }
+        return instance;
+    }
+
+    private ContactProvider() {
+        this.contacten = null;
+        this.smsContacten = null;
     }
 
     public void setContacten(List<Contact> list) {
-        Log.i("set contacts", String.valueOf(this.smsContacten.size()));
         this.contacten = list;
     }
 
@@ -65,18 +62,19 @@ public class ContactProvider {
         this.smsContacten = list;
     }
 
-    public List<Contact> retrieveContacts(Activity manager) {
+    public List<Contact> retrieveContacts(Context context, Activity manager) {
         int id = 0;
-        List<Contact> contact = new ArrayList<Contact>();
-        List<Contact> smsContacten = new ArrayList<Contact>();
+        List<Contact> contact = new ArrayList<>();
+        List<Contact> smsContacten = new ArrayList<>();
         //ophalen contacten
         Uri contant_uri = ContactsContract.Contacts.CONTENT_URI;
         ContentResolver contantResolver = context.getContentResolver();
         Cursor cursor = contantResolver.query(contant_uri, null, null, null, null);
+        manager.startManagingCursor(cursor);
 
         Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
-        Log.i("getting contacts", String.valueOf(cursor.getCount()));
+        Log.i("retrieving contacts", String.valueOf(cursor.getCount()));
         //voor elke contact met telefoonnummer in de telefoon
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -98,7 +96,7 @@ public class ContactProvider {
                 }
                 //plaatje ophalen
                 Drawable image = null;
-                InputStream input = openPhoto(contant_uri, Long.parseLong(contact_id));
+                InputStream input = openPhoto(contant_uri, Long.parseLong(contact_id), context);
                 if (input != null) {
                     Bitmap bitmap = BitmapFactory.decodeStream(input);
                     image = new BitmapDrawable(bitmap);
@@ -111,7 +109,7 @@ public class ContactProvider {
                             bestaat = true;
                         }
                     }
-                    if (bestaat == false) {
+                    if (!bestaat) {
                         contact.add(tijdelijk);
                         id++;
                     }
@@ -121,7 +119,7 @@ public class ContactProvider {
         cursor.close();
 
         //ophalen berichten
-        List<Message> smsList = new ArrayList<Message>();
+        List<Message> smsList = new ArrayList<>();
 
         Uri uri = Uri.parse("content://sms/inbox");
         Cursor c = context.getContentResolver().query(uri, null, null, null, null);
@@ -131,9 +129,9 @@ public class ContactProvider {
         if (c.moveToFirst()) {
             while (c.moveToNext()) {
                 Message sms = new Message();
-                String text = c.getString(c.getColumnIndexOrThrow("body")).toString();
-                String date = c.getString(c.getColumnIndex("date")).toString();
-                String adres = c.getString(c.getColumnIndexOrThrow("address")).toString();
+                String text = c.getString(c.getColumnIndexOrThrow("body"));
+                String date = c.getString(c.getColumnIndex("date"));
+                String adres = c.getString(c.getColumnIndexOrThrow("address"));
                 sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
                 smsList.add(sms);
             }
@@ -191,15 +189,13 @@ public class ContactProvider {
         return contact;
     }
 
-    public static Date millisToDate(long currentTime) {
-        String finalDate;
+    private Date millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(currentTime);
-        Date date = calendar.getTime();
-        return date;
+        return calendar.getTime();
     }
 
-    public InputStream openPhoto(Uri contact_uri, long contactId) {
+    private InputStream openPhoto(Uri contact_uri, long contactId, Context context) {
 
         Uri contactUri = ContentUris.withAppendedId(contact_uri, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);

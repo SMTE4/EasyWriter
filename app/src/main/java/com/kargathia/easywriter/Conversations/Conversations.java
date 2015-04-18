@@ -38,8 +38,7 @@ import java.util.List;
 
 public class Conversations extends Activity {
 
-//    ContactProvider provider = ContactProvider.getInstance();
-    ContactProvider provider;
+    ContactProvider provider = ContactProvider.getInstance();
     private int id = 0;
 
     @Override
@@ -47,7 +46,6 @@ public class Conversations extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
-        provider = new ContactProvider(this);
         provider.setContacten(getContacts());
 
         //Get a reference to the listview

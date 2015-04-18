@@ -2,7 +2,6 @@ package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kargathia.easywriter.Contacts.Contact;
-import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
 import com.kargathia.easywriter.Drawing.DrawingView;
 import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
@@ -36,7 +34,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             btnAccept;
     private int number = 0;
     private Contact contact = null;
-    private ContactProvider provider = ContactProvider.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +42,16 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
         TextView tvContactName = (TextView) this.findViewById(R.id.tvContactName);
 
-        Intent intent = getIntent();
-        number = intent.getIntExtra("ContactPosition", -1);
-        if (number != -1) {
-            for (Contact x : provider.getSmsContacten()) {
-                if (x.getID() == number) {
-                    contact = x;
-                }
-            }
-            tvContactName.setText(contact.getName());
-        }
+//        Intent intent = getIntent();
+//        number = intent.getIntExtra("ContactPosition", -1);
+//        if (number != -1) {
+//            for (Contact x : provider.getSmsContacten()) {
+//                if (x.getID() == number) {
+//                    contact = x;
+//                }
+//            }
+//            tvContactName.setText(contact.getName());
+//        }
 
 //        this.tfTest = (EditText) this.findViewById(R.id.tfTestField);
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);

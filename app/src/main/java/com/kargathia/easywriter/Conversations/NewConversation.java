@@ -2,14 +2,18 @@ package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.kargathia.easywriter.Contacts.Contact;
 import com.kargathia.easywriter.Contacts.ContactAdapter;
 import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
 import com.kargathia.easywriter.R;
+
+import java.util.List;
 
 
 public class NewConversation extends Activity implements IActivitySwipeInterpreter {
@@ -21,14 +25,20 @@ public class NewConversation extends Activity implements IActivitySwipeInterpret
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_conversation);
 
-        provider = new ContactProvider(this);
+        provider = ContactProvider.getInstance();
 
         //Get a reference to the listview
         ListView lvContacts = (ListView) findViewById(R.id.lvContacts);
         //Get a reference to the list with names
 
+        List<Contact> contacts = provider.getContacten();
+        if (contacts == null) {
+            contacts = provider.retrieveContacts(this, this);
+        }
+        Log.i("contactSize", String.valueOf(contacts.size()));
+
         //Create an adapter that feeds the data to the listview
-        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.retrieveContacts(this));
+        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, contacts);
         lvContacts.setAdapter(adapter);
     }
 
