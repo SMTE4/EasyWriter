@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.kargathia.easywriter.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -182,11 +183,10 @@ public class DrawingView extends View {
             }
             if (tv_display != null) {
                 if (letterText == null) {
-                    tv_display.setText(">Loading...");
+                    tv_display.setText(context.getString(R.string.loadingprompt));
                     letterText = "";
                 } else if (letterText.isEmpty()) {
-                    Log.i("onDraw", "isEmpty");
-                    tv_display.setText("[SPACE]");
+                    tv_display.setText(context.getString(R.string.whitespaceprompt));
                 } else {
                     tv_display.setText(letterText);
                 }
@@ -230,77 +230,13 @@ public class DrawingView extends View {
      */
     private String detectText(Bitmap bitmap) {
         if (baseAPI == null) {
-            Log.i("detectText", "returning null");
+//            Log.i("detectText", "returning null");
             return null;
         }
         baseAPI.setImage(bitmap);
         String output = baseAPI.getUTF8Text();
-        Log.i("fullText", output);
+//        Log.i("fullText", output);
         return output;
-    }
-
-    /**
-     * Copies tessdata assets to internal phone memory, as accessing is done by path.
-     */
-    private String copyAssets() {
-        context = getContext();
-        String dataPath = null;
-
-        AssetManager assetManager = context.getAssets();
-        String[] files = null;
-        File dir = null;
-        try {
-            files = assetManager.list("tessdata");
-            dir = new File(context.getFilesDir(), "tessdata");
-            dir.mkdir();
-            dataPath = context.getFilesDir().getPath();
-            Log.i("datapath", dataPath);
-        } catch (IOException e) {
-            Log.e("tag", "Failed to get asset file list.", e);
-        }
-        for (String filename : files) {
-//            Log.i("filename", filename);
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-                in = assetManager.open("tessdata/" + filename);
-                File outFile = new File(dir, filename);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-            } catch (IOException e) {
-                Log.e("tag", "Failed to copy asset file: " + filename, e);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        // NOOP
-                    }
-                }
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // NOOP
-                    }
-                }
-            }
-        }
-        return dataPath;
-    }
-
-    /**
-     * Copies individual file
-     * @param in
-     * @param out
-     * @throws IOException
-     */
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
-        }
     }
 
     /**
@@ -308,13 +244,77 @@ public class DrawingView extends View {
      */
     private class TessInitiator extends AsyncTask<Void, Void, Void> {
 
-
         @Override
         protected Void doInBackground(Void... params) {
             TessBaseAPI api = new TessBaseAPI();
             api.init(copyAssets(), "eng");
             baseAPI = api;
             return null;
+        }
+
+        /**
+         * Copies tessdata assets to internal phone memory, as accessing is done by path.
+         */
+        private String copyAssets() {
+            context = getContext();
+            String dataPath = null;
+
+            AssetManager assetManager = context.getAssets();
+            String[] files = null;
+            File dir = null;
+            try {
+                files = assetManager.list("tessdata");
+                dir = new File(context.getFilesDir(), "tessdata");
+                dir.mkdir();
+                dataPath = context.getFilesDir().getPath();
+                Log.i("datapath", dataPath);
+            } catch (IOException e) {
+                Log.e("tag", "Failed to get asset file list.", e);
+            }
+            for (String filename : files) {
+//            Log.i("filename", filename);
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    in = assetManager.open("tessdata/" + filename);
+                    File outFile = new File(dir, filename);
+                    out = new FileOutputStream(outFile);
+                    copyFile(in, out);
+                } catch (IOException e) {
+                    Log.e("tag", "Failed to copy asset file: " + filename, e);
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                }
+            }
+            return dataPath;
+        }
+
+        /**
+         * Copies individual file
+         *
+         * @param in
+         * @param out
+         * @throws IOException
+         */
+        private void copyFile(InputStream in, OutputStream out) throws IOException {
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
         }
     }
 
