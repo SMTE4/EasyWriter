@@ -21,14 +21,14 @@ public class NewConversation extends Activity implements IActivitySwipeInterpret
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_conversation);
 
-        provider = ContactProvider.getInstance();
+        provider = new ContactProvider(this);
 
         //Get a reference to the listview
         ListView lvContacts = (ListView) findViewById(R.id.lvContacts);
         //Get a reference to the list with names
 
         //Create an adapter that feeds the data to the listview
-        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.getSmsContacten());
+        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, provider.retrieveContacts(this));
         lvContacts.setAdapter(adapter);
     }
 

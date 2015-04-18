@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,8 @@ import java.util.List;
 
 public class Conversations extends Activity {
 
-    ContactProvider provider = ContactProvider.getInstance();
+//    ContactProvider provider = ContactProvider.getInstance();
+    ContactProvider provider;
     private int id = 0;
 
     @Override
@@ -45,6 +47,7 @@ public class Conversations extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
+        provider = new ContactProvider(this);
         provider.setContacten(getContacts());
 
         //Get a reference to the listview
@@ -82,7 +85,7 @@ public class Conversations extends Activity {
 
         Uri phone_uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
-
+        Log.i("getting contacts", String.valueOf(cursor.getCount()));
         //voor elke contact met telefoonnummer in de telefoon
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
