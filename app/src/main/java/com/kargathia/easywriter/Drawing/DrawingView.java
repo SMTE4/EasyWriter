@@ -26,12 +26,11 @@ import java.io.OutputStream;
 /**
  * How to use:
  * - (Optional) provide a TextView displaying individual letters recognised by the OCR engine.  <br>
- * - Use backCommand() and acceptCommand() to remove/add letters to the message based on read values. <br>
- * Both will return the full message - backCommand() can return null, acceptCommand can't. <br>
+ * - Use clearCommand() to wipe screen <br>
+ * - Use acceptCommand() to wipe screen and get currently read letter <br>
  * No other input is neccessary, screen wiping and OCR API initialisation happens automatically. <br>
- * DrawingView keeps track of both the full message, and the currently (unaccepted) interpreted drawing.
+ * DrawingView keeps track of the currently (unaccepted) interpreted drawing.
  * If a TextView is provided, it will automatically update read letter. <br>
- * Full message needs to be retrieved by calling backCommand and acceptCommand.
  * <p/>
  * Created by Kargathia on 04/04/2015.
  */
@@ -57,7 +56,7 @@ public class DrawingView extends View {
     private Bitmap canvasBitmap = null;
     private TextView tv_display;
     private String
-            fullText = "",
+//            fullText = "",
             letterText = "";
     private boolean
             isReading = false,
@@ -65,9 +64,9 @@ public class DrawingView extends View {
 
     private Context context;
 
-    public String getFullText() {
-        return this.fullText;
-    }
+//    public String getFullText() {
+//        return this.fullText;
+//    }
 
     public String getLetterText() {
         return this.letterText;
@@ -125,21 +124,12 @@ public class DrawingView extends View {
     }
 
     /**
-     * Orders drawingView to clear screen / remove last letter.
+     * Orders drawingView to clear screen
      *
-     * @return full text, or null if full text was empty already
+     * @return true if screen was non-empty
      */
-    public String backCommand() {
-        if (resetCanvas()) {
-            return this.fullText;
-        } else {
-            if (this.fullText.isEmpty()) {
-                return null;
-            } else {
-                this.fullText = fullText.substring(0, fullText.length() - 1);
-                return this.fullText;
-            }
-        }
+    public boolean clearCommand() {
+        return this.resetCanvas();
     }
 
     /**
@@ -148,13 +138,12 @@ public class DrawingView extends View {
      * @return full text
      */
     public String acceptCommand() {
-        if (letterText.trim().isEmpty()) {
-            this.fullText += " ";
-        } else {
-            this.fullText += this.letterText;
-            this.resetCanvas();
+        String output = " ";
+        if (!letterText.trim().isEmpty()) {
+            output = this.letterText;
         }
-        return this.fullText;
+        this.resetCanvas();
+        return output;
     }
 
     @Override

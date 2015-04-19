@@ -45,9 +45,9 @@ public class MessageReceiver extends BroadcastReceiver {
 
     }
 
-    public static void fakeMessageReceived(Context context, String from) {
+    public static void fakeMessageReceived(Context context, String from, String text) {
 //        Log.i("receiver", "faking message from " + from);
-        Message msg = new Message("fakeMessage", System.currentTimeMillis(), from, false);
+        Message msg = new Message(text, System.currentTimeMillis(), from, false);
         if (ContactProvider.getInstance().getContacten() == null) {
             ContactProvider.getInstance().retrieveContacts(context, null);
         }

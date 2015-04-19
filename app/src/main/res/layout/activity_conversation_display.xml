@@ -25,17 +25,19 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="message"
-        android:id="@+id/ph_tvMessageDisplay"
-        android:background="@color/primary_text_default_material_dark" />
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/etNewMessage"
+        android:textIsSelectable="true" />
 
     <include layout="@layout/drawboard"
         android:layout_height="220dp"
         android:layout_width="match_parent"
-        android:id="@+id/conversationdisplay_drawboard" />
+        android:id="@+id/conversationdisplay_drawboard"
+        android:visibility="gone" />
 
 
 </LinearLayout>

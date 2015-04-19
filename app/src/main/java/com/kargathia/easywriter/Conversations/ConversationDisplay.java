@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +41,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             tvDrawPrompt,
             tvLetterDisplay,
             tvContactName;
-    private TextView ph_tvMessageDisplay;
+    private EditText etNewMessage;
     private DrawingView dvDrawDisplay;
     private Button
             btnSendMessage,
@@ -47,6 +49,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             btnAccept;
     private Contact contact = null;
     private MessageAdapter adapter;
+    private SmsManager smsManager;
 
     /**
      * Starts a ConversationDisplay from given context
@@ -64,6 +67,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_display);
+        this.smsManager = SmsManager.getDefault();
 
         this.initViews();
 
@@ -121,7 +125,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
     }
 
     public void notifyDataChanged(Message msg) {
-//        adapter.add(msg);
         adapter.notifyDataSetChanged();
         lvMessageHistory.setSelection(adapter.getCount() - 1);
     }
@@ -129,7 +132,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
     private void initViews() {
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
         this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
-        this.ph_tvMessageDisplay = (TextView) this.findViewById(R.id.ph_tvMessageDisplay);
         this.tvLetterDisplay = (TextView) this.findViewById(R.id.tvLetterDisplay);
         this.btnSendMessage = (Button) this.findViewById(R.id.btnAcceptAllDrawBoard);
         this.btnBack = (Button) this.findViewById(R.id.btnBackDrawBoard);
@@ -139,6 +141,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         this.layoutDrawBoard = (RelativeLayout) this.findViewById(R.id.conversationdisplay_drawboard);
         this.tvContactName = (TextView) this.findViewById(R.id.tvContactName);
         this.lvMessageHistory = (ListView) this.findViewById(R.id.lvHistory);
+        this.etNewMessage = (EditText) this.findViewById(R.id.etNewMessage);
     }
 
     private void setOnClicks() {
@@ -172,29 +175,81 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         //Create an adapter that feeds the data to the listview
         this.adapter = new MessageAdapter(this, R.id.lvHistory, contact.getMessages());
         lvMessageHistory.setAdapter(adapter);
+        lvMessageHistory.setItemsCanFocus(false);
+        lvMessageHistory.setDivider(null);
+
+        etNewMessage.setKeyListener(null);
+        etNewMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (v.equals(etNewMessage) && hasFocus) {
+                    startMessage();
+                }
+                lvMessageHistory.setSelection(adapter.getCount() - 1);
+            }
+        });
+    }
+
+    private void startMessage() {
+        Log.i("onClickConv", "startMessage");
+        this.layoutDrawBoard.setVisibility(View.VISIBLE);
+        etNewMessage.setCursorVisible(true);
+    }
+
+    private void endMessage() {
+        etNewMessage.setText("");
+        etNewMessage.clearFocus();
+        etNewMessage.setCursorVisible(false);
+        dvDrawDisplay.clearCommand();
+        layoutDrawBoard.setVisibility(View.GONE);
     }
 
     @Override
     public void backGesture() {
-        String text = dvDrawDisplay.backCommand();
-        if (text != null) {
+        if (dvDrawDisplay.clearCommand()) {
             displayToast("wiped");
-            ph_tvMessageDisplay.setText(text);
-            return;
         } else {
-            displayToast("going back now");
+//            String subStr1 = etNewMessage.getText()
+//                    .subSequence(0, etNewMessage.getSelectionStart()).toString();
+//            String subStr2 = etNewMessage.getText()
+//                    .subSequence(etNewMessage.getSelectionEnd(), etNewMessage.length()).toString();
+//            if(!subStr1.isEmpty()){
+//                subStr1 = subStr1.substring(0, subStr1.length() - 1);
+//            }
+//            String fullStr = subStr1.concat(subStr2);
+//            etNewMessage.setText(fullStr);
+            String prevText = etNewMessage.getText().toString();
+            if (prevText.length() > 0) {
+                etNewMessage.setText(prevText.substring(0, prevText.length() - 1));
+            }
         }
     }
 
     @Override
     public void acceptGesture() {
-        ph_tvMessageDisplay.setText(dvDrawDisplay.acceptCommand());
+//        String subStr1 = etNewMessage.getText()
+//                .subSequence(0, etNewMessage.getSelectionStart()).toString();
+//        String subStr2 = etNewMessage.getText()
+//                .subSequence(etNewMessage.getSelectionEnd(), etNewMessage.length()).toString();
+//        subStr1 = subStr1.concat(dvDrawDisplay.acceptCommand());
+//        int position = subStr1.length();
+//        etNewMessage.setText(subStr1.concat(subStr2));
+//        etNewMessage.setSelection(position);
+
+        String prevText = etNewMessage.getText().toString();
+        etNewMessage.setText(prevText.concat(dvDrawDisplay.acceptCommand()));
     }
 
     @Override
     public void acceptAllGesture() {
-        displayToast("sending message: " + ph_tvMessageDisplay.getText());
-        MessageReceiver.fakeMessageReceived(this, contact.getNummer());
+        String smsText = etNewMessage.getText().toString();
+        acceptGesture();
+        displayToast("sending message: " + smsText);
+        MessageReceiver.fakeMessageReceived(this, contact.getNummer(), smsText);
+        this.endMessage();
+
+        // Turn this on when really testing
+//        smsManager.sendTextMessage(contact.getNummer(), null, smsText, null, null);
     }
 
     private void displayToast(String text) {
