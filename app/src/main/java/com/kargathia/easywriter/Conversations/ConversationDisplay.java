@@ -202,6 +202,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         etNewMessage.setCursorVisible(false);
         dvDrawDisplay.clearCommand();
         layoutDrawBoard.setVisibility(View.GONE);
+        lvMessageHistory.setSelection(adapter.getCount() - 1);
     }
 
     @Override
