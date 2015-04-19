@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import com.kargathia.easywriter.Contacts.ContactProvider;
 import com.kargathia.easywriter.Drawing.ActivitySwipeDetector;
 import com.kargathia.easywriter.Drawing.DrawingView;
 import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
+import com.kargathia.easywriter.Messaging.Message;
+import com.kargathia.easywriter.Messaging.MessageAdapter;
+import com.kargathia.easywriter.Messaging.MessageReceiver;
 import com.kargathia.easywriter.R;
 
 
@@ -30,6 +34,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             layoutMessageButtons,
             layoutHistory,
             layoutDrawBoard;
+    private ListView lvMessageHistory;
     private TextView
             tvDrawPrompt,
             tvLetterDisplay,
@@ -41,6 +46,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             btnBack,
             btnAccept;
     private Contact contact = null;
+    private MessageAdapter adapter;
 
     /**
      * Starts a ConversationDisplay from given context
@@ -63,9 +69,12 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
         Intent intent = getIntent();
         int contactID = intent.getIntExtra(INTENT_CONTACT_ID, -1);
-        this.contact = ContactProvider.getInstance().getContactByID(contactID);
+        ContactProvider provider = ContactProvider.getInstance();
+        this.contact = provider.getContactByID(contactID);
         if (contact != null) {
             tvContactName.setText(contact.getName());
+            addPlaceHolderMessages(contact);
+            provider.subScribeToContact(contactID, this);
         } else {
             Log.e("ConvDisplay init", "failed to retrieve contact");
         }
@@ -97,6 +106,26 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         return super.onOptionsItemSelected(item);
     }
 
+    private void addPlaceHolderMessages(Contact input) {
+        if (!input.getMessages().isEmpty()) {
+            return;
+        }
+
+        for (int rep = 1; rep < 20; rep++) {
+            boolean outgoing = (rep % 3 == 1);
+            String text = "message text " + rep;
+
+            Message msg = new Message(text, System.currentTimeMillis(), "", outgoing);
+            input.addMessage(msg);
+        }
+    }
+
+    public void notifyDataChanged(Message msg) {
+//        adapter.add(msg);
+        adapter.notifyDataSetChanged();
+        lvMessageHistory.setSelection(adapter.getCount() - 1);
+    }
+
     private void initViews() {
         this.tvDrawPrompt = (TextView) this.findViewById(R.id.stat_tvDrawPrompt);
         this.dvDrawDisplay = (DrawingView) this.findViewById(R.id.dvDrawDisplay);
@@ -109,6 +138,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         this.layoutMessageButtons = (RelativeLayout) this.findViewById(R.id.layoutMessageButtons);
         this.layoutDrawBoard = (RelativeLayout) this.findViewById(R.id.conversationdisplay_drawboard);
         this.tvContactName = (TextView) this.findViewById(R.id.tvContactName);
+        this.lvMessageHistory = (ListView) this.findViewById(R.id.lvHistory);
     }
 
     private void setOnClicks() {
@@ -138,6 +168,10 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
                 backGesture();
             }
         });
+
+        //Create an adapter that feeds the data to the listview
+        this.adapter = new MessageAdapter(this, R.id.lvHistory, contact.getMessages());
+        lvMessageHistory.setAdapter(adapter);
     }
 
     @Override
@@ -159,7 +193,9 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
     @Override
     public void acceptAllGesture() {
-        displayToast("sending message: " + ph_tvMessageDisplay.getText()); }
+        displayToast("sending message: " + ph_tvMessageDisplay.getText());
+        MessageReceiver.fakeMessageReceived(this, contact.getNummer());
+    }
 
     private void displayToast(String text) {
         int duration = Toast.LENGTH_SHORT;

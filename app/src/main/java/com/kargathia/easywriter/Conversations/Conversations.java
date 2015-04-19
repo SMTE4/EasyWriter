@@ -83,6 +83,7 @@ public class Conversations extends Activity {
         });
     }
 
+    @Deprecated
     public List<Contact> getContacts() {
         List<Contact> contact = new ArrayList<Contact>();
         List<Contact> smsContacten = new ArrayList<Contact>();
@@ -147,11 +148,10 @@ public class Conversations extends Activity {
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
             while (c.moveToNext()) {
-                Message sms = new Message();
                 String text = c.getString(c.getColumnIndexOrThrow("body")).toString();
                 String date = c.getString(c.getColumnIndex("date")).toString();
                 String adres = c.getString(c.getColumnIndexOrThrow("address")).toString();
-                sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
+                Message sms = new Message(text, millisToDate(Long.parseLong(date)), adres, false);
                 smsList.add(sms);
             }
         }

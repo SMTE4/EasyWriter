@@ -1,5 +1,6 @@
 package com.kargathia.easywriter.Messaging;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -26,10 +27,23 @@ public class Message {
     public boolean isOutGoing(){ return this.isOutGoing; }
 
 
-    public void setMessage(String tekst, Date datum, String from, boolean isOutGoing) {
+    public Message(String tekst, Date datum, String from, boolean isOutGoing) {
         this.datum = datum;
         this.text = tekst;
         this.from = from;
         this.isOutGoing = isOutGoing;
+    }
+
+    public Message(String text, long dateInMillis, String from, boolean isOutGoing) {
+        this.datum = millisToDate(dateInMillis);
+        this.text = text;
+        this.from = from;
+        this.isOutGoing = isOutGoing;
+    }
+
+    private Date millisToDate(long currentTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTime);
+        return calendar.getTime();
     }
 }

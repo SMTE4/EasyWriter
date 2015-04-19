@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.kargathia.easywriter.Conversations.ConversationDisplay;
 import com.kargathia.easywriter.Messaging.Message;
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +35,7 @@ public class ContactProvider {
             contacten,
             smsContacten;
     private HashMap<Integer, Contact> contactMap;
+    private HashMap<Integer, ConversationDisplay> displayedMap;
 
     public List<Contact> getContacten() {
         return contacten;
@@ -57,10 +59,13 @@ public class ContactProvider {
     private ContactProvider() {
         this.contacten = null;
         this.smsContacten = null;
+        this.contactMap = null;
+        this.displayedMap = null;
     }
 
     public void setContacten(List<Contact> list) {
         this.contacten = list;
+        this.displayedMap = new HashMap<>();
 
         contactMap = new HashMap<>();
         for (Contact c : contacten) {
@@ -70,6 +75,31 @@ public class ContactProvider {
 
     public void setSmsContacten(List<Contact> list) {
         this.smsContacten = list;
+    }
+
+    public void subScribeToContact(int contact, ConversationDisplay display) {
+        displayedMap.put(contact, display);
+    }
+
+    public Contact addMessage(Message msg) {
+        if (contacten == null) {
+            return null;
+        }
+        for (Contact con : contacten) {
+            if (con.getNummer().equals(msg.getFrom())) {
+                con.addMessage(msg);
+//                Log.i("provider", "contact found for " + msg.getFrom());
+                if (displayedMap != null) {
+                    ConversationDisplay display = displayedMap.get(con.getID());
+                    if (display != null) {
+                        display.notifyDataChanged(msg);
+//                        Log.i("provider", "notifying display");
+                    }
+                }
+                return con;
+            }
+        }
+        return null;
     }
 
     public List<Contact> retrieveContacts(Context context, Activity manager) {
@@ -153,20 +183,26 @@ public class ContactProvider {
             // Read the sms data and store it in the list
             if (cursor.moveToFirst()) {
                 while (cursor.moveToNext()) {
-                    Message sms = new Message();
                     String text = cursor.getString(cursor.getColumnIndexOrThrow("body"));
                     String date = cursor.getString(cursor.getColumnIndex("date"));
                     String adres = cursor.getString(cursor.getColumnIndexOrThrow("address"));
-                    sms.setMessage(text, millisToDate(Long.parseLong(date)), adres, false);
+                    Message sms = new Message(text, millisToDate(Long.parseLong(date)), adres, false);
                     smsList.add(sms);
                 }
             }
 
             for (Message x : smsList) {
+                Boolean foundContact = false;
                 for (Contact a : contact) {
                     if (x.getFrom().equals(a.getNummer())) {
                         a.addMessage(x);
+                        foundContact = true;
+                        break;
                     }
+                }
+                // IF MESSAGE DOES NOT BELONG TO CONTACT
+                if (!foundContact) {
+                    contact.add(new Contact(id, context, x.getFrom(), x.getFrom(), null));
                 }
             }
         } finally {
