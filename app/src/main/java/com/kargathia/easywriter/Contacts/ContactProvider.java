@@ -191,18 +191,37 @@ public class ContactProvider {
                 }
             }
 
+            //getting outbox messages
+            uri = Uri.parse("content://sms/sent");
+            cursor = context.getContentResolver().query(uri, null, null, null, null);
+//        startManagingCursor(c);
+
+            // Read the sms data and store it in the list
+            if (cursor.moveToFirst()) {
+                while (cursor.moveToNext()) {
+                    String text = cursor.getString(cursor.getColumnIndexOrThrow("body")).toString();
+                    String date = cursor.getString(cursor.getColumnIndex("date")).toString();
+                    String adres = cursor.getString(cursor.getColumnIndexOrThrow("address")).toString();
+                    Message sms = new Message(text, millisToDate(Long.parseLong(date)), adres, true);
+                    smsList.add(sms);
+                }
+            }
+
+            //connect contact to message
+            //if contact doesn't exist, create new one
+            boolean exist = false;
             for (Message x : smsList) {
-                Boolean foundContact = false;
+                exist = false;
                 for (Contact a : contact) {
                     if (x.getFrom().equals(a.getNummer())) {
                         a.addMessage(x);
-                        foundContact = true;
-                        break;
+                        exist = true;
                     }
                 }
-                // IF MESSAGE DOES NOT BELONG TO CONTACT
-                if (!foundContact) {
-                    contact.add(new Contact(id, context, x.getFrom(), x.getFrom(), null));
+                if(!exist){
+                    Contact newContact = new Contact(id, context, x.getFrom(), x.getFrom(), null);
+                    newContact.addMessage(x);
+                    contact.add(newContact);
                 }
             }
         } finally {

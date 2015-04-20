@@ -156,11 +156,37 @@ public class Conversations extends Activity {
             }
         }
 
+        //getting outbox messages
+        uri = Uri.parse("content://sms/sent");
+        c = getContentResolver().query(uri, null, null, null, null);
+//        startManagingCursor(c);
+
+        // Read the sms data and store it in the list
+        if (c.moveToFirst()) {
+            while (c.moveToNext()) {
+                String text = c.getString(c.getColumnIndexOrThrow("body")).toString();
+                String date = c.getString(c.getColumnIndex("date")).toString();
+                String adres = c.getString(c.getColumnIndexOrThrow("address")).toString();
+                Message sms = new Message(text, millisToDate(Long.parseLong(date)), adres, true);
+                smsList.add(sms);
+            }
+        }
+
+        //connect contact to message
+        //if contact doesn't exist, create new one
+        boolean exist = false;
         for (Message x : smsList) {
+            exist = false;
             for (Contact a : contact) {
                 if (x.getFrom().equals(a.getNummer())) {
                     a.addMessage(x);
+                    exist = true;
                 }
+            }
+            if(!exist){
+                Contact nieuw = new Contact(id, this, x.getFrom(), x.getFrom(), null);
+                nieuw.addMessage(x);
+                contact.add(nieuw);
             }
         }
         c.close();

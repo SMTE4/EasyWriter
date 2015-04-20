@@ -57,6 +57,14 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         if (contact.getLastMessage() == null) {
             tv2.setText("There are no messages");
         } else {
+            String inOut = "";
+            if(contact.getMessages().get(contact.getMessages().size() - 1).isOutGoing()) {
+                inOut = "Out; ";
+            }
+            else {
+                inOut = "In; ";
+            }
+
             String date = DateFormat.getDateInstance(DateFormat.LONG, currentLocale).format(contact.getMessages().get(contact.getMessages().size() - 1).getDate());
             String last = "; ";
             String text = contact.getMessages().get(contact.getMessages().size() - 1).getText();
@@ -65,7 +73,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
                 end = end.substring(0, 30);
             }
             String dot = "...";
-            tv2.setText(date + last + end + dot);
+            tv2.setText(inOut+date + last + end + dot);
         }
 
 
