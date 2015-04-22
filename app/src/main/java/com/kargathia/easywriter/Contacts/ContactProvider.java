@@ -3,6 +3,7 @@ package com.kargathia.easywriter.Contacts;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -81,10 +82,18 @@ public class ContactProvider {
         displayedMap.put(contact, display);
     }
 
-    public Contact addMessage(Message msg) {
+    public Contact addMessage(Context context, Message msg) {
         if (contacten == null) {
             return null;
         }
+        if(msg.isOutGoing()){
+            ContentValues values = new ContentValues();
+            values.put("date", System.currentTimeMillis());
+            values.put("address", msg.getFrom());
+            values.put("body", msg.getText());
+            context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+        }
+
         for (Contact con : contacten) {
             if (con.getNummer().equals(msg.getFrom())) {
                 con.addMessage(msg);
@@ -191,6 +200,16 @@ public class ContactProvider {
                 }
             }
 
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = null;
+            uri = null;
+        }
+
+        try{
+
             //getting outbox messages
             uri = Uri.parse("content://sms/sent");
             cursor = context.getContentResolver().query(uri, null, null, null, null);
@@ -204,6 +223,7 @@ public class ContactProvider {
                     String adres = cursor.getString(cursor.getColumnIndexOrThrow("address")).toString();
                     Message sms = new Message(text, millisToDate(Long.parseLong(date)), adres, true);
                     smsList.add(sms);
+//                    Log.i("contactProvider", "outgoing message to " + adres + ": " + text);
                 }
             }
 

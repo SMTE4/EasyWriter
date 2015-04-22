@@ -1,8 +1,10 @@
 package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -232,7 +234,8 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
         // Turn this on when really testing
         smsManager.sendTextMessage(contact.getNummer(), null, smsText, null, null);
-        contact.addMessage(new Message(smsText, System.currentTimeMillis(), contact.getNummer(), true));
+        ContactProvider.getInstance().addMessage(this,
+                new Message(smsText, System.currentTimeMillis(), contact.getNummer(), true));
         adapter.notifyDataSetChanged();
     }
 

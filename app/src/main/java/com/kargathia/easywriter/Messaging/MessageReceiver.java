@@ -40,7 +40,7 @@ public class MessageReceiver extends BroadcastReceiver {
             if (ContactProvider.getInstance().getContacten() == null) {
                 ContactProvider.getInstance().retrieveContacts(context, null);
             }
-            ContactProvider.getInstance().addMessage(msg);
+            ContactProvider.getInstance().addMessage(context, msg);
         }
 
     }
@@ -51,6 +51,6 @@ public class MessageReceiver extends BroadcastReceiver {
         if (ContactProvider.getInstance().getContacten() == null) {
             ContactProvider.getInstance().retrieveContacts(context, null);
         }
-        ContactProvider.getInstance().addMessage(msg);
+        ContactProvider.getInstance().addMessage(context, msg);
     }
 }
