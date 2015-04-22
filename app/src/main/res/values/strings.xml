@@ -25,5 +25,6 @@
     <string name="noconversationsmessage">No conversations yet =(</string>
     <string name="whitespaceprompt">[SPACE]</string>
     <string name="loadingprompt">Loading...</string>
+    <string name="typeprompt">Touch to start drawing</string>
 
 </resources>

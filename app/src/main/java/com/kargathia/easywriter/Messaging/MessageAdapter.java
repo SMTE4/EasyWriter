@@ -44,16 +44,19 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
         TextView tvMessageDisplay = (TextView) convertView.findViewById(R.id.tv_msg_text);
         TextView tvDateDisplay = (TextView) convertView.findViewById(R.id.tv_msg_date);
-        LinearLayout layoutMessageItem = (LinearLayout) convertView.findViewById(R.id.stat_layoutmessageitem);
+        LinearLayout statLayoutMessageItem = (LinearLayout) convertView.findViewById(R.id.stat_layoutmessageitem);
+        LinearLayout layoutMessageItem = (LinearLayout) convertView.findViewById(R.id.layoutMessageItem);
 
 
         tvMessageDisplay.setText(msg.getText());
-        tvDateDisplay.setText(msg.getDate().toString()); // probably not human-readable, will get along to that
+        tvDateDisplay.setText(msg.getDate().toString()); // TODO fix formatting
 
         if(msg.isOutGoing()){
-            layoutMessageItem.setGravity(Gravity.RIGHT);
+            statLayoutMessageItem.setGravity(Gravity.RIGHT);
+            layoutMessageItem.setBackgroundColor(context.getResources().getColor(R.color.msg_out));
         } else {
-            layoutMessageItem.setGravity(Gravity.LEFT);
+            statLayoutMessageItem.setGravity(Gravity.LEFT);
+            layoutMessageItem.setBackgroundColor(context.getResources().getColor(R.color.msg_in));
         }
 
         return convertView;

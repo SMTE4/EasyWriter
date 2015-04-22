@@ -21,7 +21,8 @@
                 android:layout_height="fill_parent"
                 android:layout_width="match_parent"
                 android:stackFromBottom="true"
-                android:layout_below="@+id/tvContactName" />
+                android:layout_below="@+id/tvContactName"
+                android:listSelector="@color/transparant" />
 
     </RelativeLayout>
 
@@ -31,7 +32,9 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/etNewMessage"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/typeprompt" />
 
     <include layout="@layout/drawboard"
         android:layout_height="220dp"

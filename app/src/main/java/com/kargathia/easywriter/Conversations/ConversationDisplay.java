@@ -1,10 +1,8 @@
 package com.kargathia.easywriter.Conversations;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -50,7 +48,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             btnAccept;
     private Contact contact = null;
     private MessageAdapter adapter;
-    private SmsManager smsManager;
+    private int lastVisibleItem = 1;
 
     /**
      * Starts a ConversationDisplay from given context
@@ -68,7 +66,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_display);
-        this.smsManager = SmsManager.getDefault();
 
         this.initViews();
 
@@ -179,6 +176,15 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         lvMessageHistory.setItemsCanFocus(false);
         lvMessageHistory.setDivider(null);
 
+        lvMessageHistory.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                lvMessageHistory.smoothScrollToPosition(lastVisibleItem);
+            }
+        });
+
+
         etNewMessage.setKeyListener(null);
         etNewMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -193,8 +199,9 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
     private void startMessage() {
         Log.i("onClickConv", "startMessage");
-        this.layoutDrawBoard.setVisibility(View.VISIBLE);
         etNewMessage.setCursorVisible(true);
+        lastVisibleItem = lvMessageHistory.getLastVisiblePosition();
+        this.layoutDrawBoard.setVisibility(View.VISIBLE);
     }
 
     private void endMessage() {
@@ -214,6 +221,8 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             String prevText = etNewMessage.getText().toString();
             if (prevText.length() > 0) {
                 etNewMessage.setText(prevText.substring(0, prevText.length() - 1));
+            } else {
+                endMessage();
             }
         }
     }
@@ -226,13 +235,17 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
     @Override
     public void acceptAllGesture() {
-        String smsText = etNewMessage.getText().toString();
         acceptGesture();
+        String smsText = etNewMessage.getText().toString();
+        if (smsText.trim().isEmpty()) {
+            displayToast("can't send empty sms messages");
+            return;
+        }
         displayToast("sending message: " + smsText);
 //        MessageReceiver.fakeMessageReceived(this, contact.getNummer(), smsText);
         this.endMessage();
 
-        // Turn this on when really testing
+        SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(contact.getNummer(), null, smsText, null, null);
         ContactProvider.getInstance().addMessage(this,
                 new Message(smsText, System.currentTimeMillis(), contact.getNummer(), true));

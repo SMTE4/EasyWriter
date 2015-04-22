@@ -1,8 +1,8 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="android:Theme.Holo">
+    <!-- Customize your theme here. -->
     </style>
     <style name="TitleText"></style>
     <style name="MainButton"></style>
@@ -12,7 +12,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/background</item>
+        <!--<item name="android:background">@color/background</item>-->
     </style>
     <style name="LV.conversation1" parent="LineairView">
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
@@ -54,18 +54,6 @@
     <style name="tv.New" parent="TextView">
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:textSize">30sp</item>
-    </style>
-    <style name="tv.swipeLeft" parent="TextView">
-        <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:textColor">#ffae0e08</item>
-        <item name="android:textSize">40sp</item>
-    </style>
-    <style name="tv.swipeRight" parent="TextView">
-        <item name="android:layout_alignParentLeft">false</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:textColor">#ff3eae0e</item>
-        <item name="android:textSize">40sp</item>
     </style>
     <style name="tv.drawHere" parent="TextView">
         <item name="android:layout_centerHorizontal">true</item>
