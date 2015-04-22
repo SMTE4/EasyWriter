@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -184,6 +185,15 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
             }
         });
 
+        lvMessageHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (layoutDrawBoard.getVisibility() == View.VISIBLE) {
+                    endMessage();
+                }
+            }
+        });
+
 
         etNewMessage.setKeyListener(null);
         etNewMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -210,7 +220,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         etNewMessage.setCursorVisible(false);
         dvDrawDisplay.clearCommand();
         layoutDrawBoard.setVisibility(View.GONE);
-        lvMessageHistory.setSelection(adapter.getCount() - 1);
     }
 
     @Override
@@ -231,6 +240,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
     public void acceptGesture() {
         String prevText = etNewMessage.getText().toString();
         etNewMessage.setText(prevText.concat(dvDrawDisplay.acceptCommand()));
+        etNewMessage.setSelection(etNewMessage.getText().length());
     }
 
     @Override
