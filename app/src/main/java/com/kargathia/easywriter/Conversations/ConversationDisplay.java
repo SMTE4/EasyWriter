@@ -23,7 +23,6 @@ import com.kargathia.easywriter.Drawing.DrawingView;
 import com.kargathia.easywriter.Drawing.IActivitySwipeInterpreter;
 import com.kargathia.easywriter.Messaging.Message;
 import com.kargathia.easywriter.Messaging.MessageAdapter;
-import com.kargathia.easywriter.Messaging.MessageReceiver;
 import com.kargathia.easywriter.R;
 
 
@@ -77,7 +76,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         this.contact = provider.getContactByID(contactID);
         if (contact != null) {
             tvContactName.setText(contact.getName());
-            addPlaceHolderMessages(contact);
+//            addPlaceHolderMessages(contact);
             provider.subScribeToContact(contactID, this);
         } else {
             Log.e("ConvDisplay init", "failed to retrieve contact");
@@ -110,19 +109,19 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         return super.onOptionsItemSelected(item);
     }
 
-    private void addPlaceHolderMessages(Contact input) {
-        if (!input.getMessages().isEmpty()) {
-            return;
-        }
-
-        for (int rep = 1; rep < 20; rep++) {
-            boolean outgoing = (rep % 3 == 1);
-            String text = "message text " + rep;
-
-            Message msg = new Message(text, System.currentTimeMillis(), "", outgoing);
-            input.addMessage(msg);
-        }
-    }
+//    private void addPlaceHolderMessages(Contact input) {
+//        if (!input.getMessages().isEmpty()) {
+//            return;
+//        }
+//
+//        for (int rep = 1; rep < 20; rep++) {
+//            boolean outgoing = (rep % 3 == 1);
+//            String text = "message text " + rep;
+//
+//            Message msg = new Message(text, System.currentTimeMillis(), "", outgoing);
+//            input.addMessage(msg);
+//        }
+//    }
 
     public void notifyDataChanged(Message msg) {
         adapter.notifyDataSetChanged();
@@ -210,15 +209,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         if (dvDrawDisplay.clearCommand()) {
             displayToast("wiped");
         } else {
-//            String subStr1 = etNewMessage.getText()
-//                    .subSequence(0, etNewMessage.getSelectionStart()).toString();
-//            String subStr2 = etNewMessage.getText()
-//                    .subSequence(etNewMessage.getSelectionEnd(), etNewMessage.length()).toString();
-//            if(!subStr1.isEmpty()){
-//                subStr1 = subStr1.substring(0, subStr1.length() - 1);
-//            }
-//            String fullStr = subStr1.concat(subStr2);
-//            etNewMessage.setText(fullStr);
             String prevText = etNewMessage.getText().toString();
             if (prevText.length() > 0) {
                 etNewMessage.setText(prevText.substring(0, prevText.length() - 1));
@@ -228,15 +218,6 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
     @Override
     public void acceptGesture() {
-//        String subStr1 = etNewMessage.getText()
-//                .subSequence(0, etNewMessage.getSelectionStart()).toString();
-//        String subStr2 = etNewMessage.getText()
-//                .subSequence(etNewMessage.getSelectionEnd(), etNewMessage.length()).toString();
-//        subStr1 = subStr1.concat(dvDrawDisplay.acceptCommand());
-//        int position = subStr1.length();
-//        etNewMessage.setText(subStr1.concat(subStr2));
-//        etNewMessage.setSelection(position);
-
         String prevText = etNewMessage.getText().toString();
         etNewMessage.setText(prevText.concat(dvDrawDisplay.acceptCommand()));
     }
@@ -246,11 +227,13 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         String smsText = etNewMessage.getText().toString();
         acceptGesture();
         displayToast("sending message: " + smsText);
-        MessageReceiver.fakeMessageReceived(this, contact.getNummer(), smsText);
+//        MessageReceiver.fakeMessageReceived(this, contact.getNummer(), smsText);
         this.endMessage();
 
         // Turn this on when really testing
-//        smsManager.sendTextMessage(contact.getNummer(), null, smsText, null, null);
+        smsManager.sendTextMessage(contact.getNummer(), null, smsText, null, null);
+        contact.addMessage(new Message(smsText, System.currentTimeMillis(), contact.getNummer(), true));
+        adapter.notifyDataSetChanged();
     }
 
     private void displayToast(String text) {
