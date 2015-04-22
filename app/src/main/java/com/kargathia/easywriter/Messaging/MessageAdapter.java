@@ -46,6 +46,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         TextView tvDateDisplay = (TextView) convertView.findViewById(R.id.tv_msg_date);
         LinearLayout layoutMessageItem = (LinearLayout) convertView.findViewById(R.id.stat_layoutmessageitem);
 
+
         tvMessageDisplay.setText(msg.getText());
         tvDateDisplay.setText(msg.getDate().toString()); // probably not human-readable, will get along to that
 

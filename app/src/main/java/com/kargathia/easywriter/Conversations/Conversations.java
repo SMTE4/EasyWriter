@@ -128,7 +128,8 @@ public class Conversations extends Activity {
     public void openConvHistory(int position) {
         Intent intent = new Intent(Conversations.this, ConversationDisplay.class);
         //doorsturen contactpersoon
-        intent.putExtra(ConversationDisplay.INTENT_CONTACT_ID, provider.getSmsContacten().get(position).getID());
+        Contact contact = provider.getSmsContacten().get(position);
+        intent.putExtra(ConversationDisplay.INTENT_CONTACT_ID, contact.getID());
         startActivity(intent);
     }
 

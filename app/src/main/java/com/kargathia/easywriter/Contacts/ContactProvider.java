@@ -236,12 +236,15 @@ public class ContactProvider {
                     if (x.getFrom().equals(a.getNummer())) {
                         a.addMessage(x);
                         exist = true;
+                        break;
                     }
                 }
                 if(!exist){
+                    System.out.println(id + " from " + x.getFrom());
                     Contact newContact = new Contact(id, context, x.getFrom(), x.getFrom(), null);
                     newContact.addMessage(x);
                     contact.add(newContact);
+                    id++;
                 }
             }
         } finally {
@@ -251,6 +254,7 @@ public class ContactProvider {
             cursor = null;
             uri = null;
         }
+        System.out.println("Alle berichtjes gedaan");
 
         //contacten sorteren
         Collections.sort(contact, new Comparator<Contact>() {
