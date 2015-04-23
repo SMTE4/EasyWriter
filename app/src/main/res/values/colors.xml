@@ -7,4 +7,5 @@
     <color name="transparant">#00000000</color>
     <color name="msg_out">#ff2B91C4</color>
     <color name="msg_in">#ff449DC9</color>
+    <color name="msgtextcolor">#000000</color>
 </resources>
