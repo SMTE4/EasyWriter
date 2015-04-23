@@ -266,4 +266,10 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
         int duration = Toast.LENGTH_SHORT;
         Toast.makeText(this, text, duration).show();
     }
+
+    @Override
+    public void onResume() {
+        ContactProvider.getInstance().retrieveContacts(this, this);
+        adapter.notifyDataSetChanged();
+    }
 }

@@ -160,10 +160,8 @@ public class NewConversation extends Activity implements IActivitySwipeInterpret
     @Override
     public void onResume() {
         super.onResume();
-        if (provider.getContacten() == null) {
-            Log.i("resuming newConv", "retrieving contacts");
-            provider.retrieveContacts(this, this);
-        }
+        Log.i("resuming newConv", "retrieving contacts");
+        provider.retrieveContacts(this, this);
     }
 
     private void displayToast(String text) {

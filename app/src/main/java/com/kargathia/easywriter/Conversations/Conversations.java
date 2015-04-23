@@ -31,6 +31,7 @@ public class Conversations extends Activity {
 
     ContactProvider provider = ContactProvider.getInstance();
     private int id = 0;
+    private ContactAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class Conversations extends Activity {
         }
 
         //Create an adapter that feeds the data to the listview
-        ContactAdapter adapter = new ContactAdapter(this, R.id.lvConversationDisplay, conversations);
+        adapter = new ContactAdapter(this, R.id.lvConversationDisplay, conversations);
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,5 +143,6 @@ public class Conversations extends Activity {
     public void onResume() {
         super.onResume();
         provider.retrieveContacts(this, this);
+        adapter.notifyDataSetChanged();
     }
 }
