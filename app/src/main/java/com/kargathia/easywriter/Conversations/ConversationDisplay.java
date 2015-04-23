@@ -269,6 +269,7 @@ public class ConversationDisplay extends Activity implements IActivitySwipeInter
 
     @Override
     public void onResume() {
+        super.onResume();
         ContactProvider.getInstance().retrieveContacts(this, this);
         adapter.notifyDataSetChanged();
     }
